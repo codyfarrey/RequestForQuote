@@ -143,99 +143,39 @@
 
           <div class="row">
             <div class="col-12">
-              <h2 class="center">Create Customer Account</h2>
+              <h2 class="center">Create New Part</h2>
             </div>
           </div>
 
           <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
             <div class="box">
-              <h4 class="center">Company</h4>
+              <h4 class="center">Part</h4>
 
               <div class="form-group">
-                <label for="accountNumber">Account Number</label>
-                <input type="text" class="form-control" id="accountNumber" name="accountNumber" placeholder="192378">
+                <label for="partName">Part Name</label>
+                <input type="text" class="form-control" id="partName" name="partName" placeholder="Part Name">
               </div>
 
               <div class="form-group">
-                <label for="companyName">Company Name</label>
-                <input type="text" class="form-control" id="companyName" name="companyName" value="<?php echo $companyName;?>" placeholder="DeKalb">
+                <label for="manufacturerName">Manufacturer Name</label>
+                <input type="text" class="form-control" id="manufacturerName" name="manufacturerName" value="<?php echo $companyName;?>" placeholder="Manufacturer's Name">
                 <span class="error">* <?php echo $nameErr;?></span>
               </div>
-            </div>
-            
-            <div class="box">
-              <h4 class="center">Address</h4>
 
-              <div class="row">
-                <div class="col box">
-                  <h4 class="center">shipping</h4>
-                    <div class="form-group">
-                      <label for="shippingStreet">Street</label>
-                      <input type="text" class="form-control" id="shippingStreet" name="shippingStreet" value="<?php echo $shippingStreet;?>" placeholder="123 Franklin St.">
-                    </div>
-
-                    <div class="form-group">
-                      <label for="shippingCity">City</label>
-                      <input type="text" class="form-control" id="shippingCity" name="shippingCity" value="<?php echo $shippingCity;?>" placeholder="DeKalb">
-                    </div>
-
-                    <div class="form-group">
-                      <label for="shippingState">State</label>
-                      <input type="text" class="form-control" id="shippingState" name="shippingState" value="<?php echo $shippingState;?>" placeholder="Illinois">
-                    </div>
-
-                    <div class="form-group">
-                      <label for="shippingZip">Zip Code</label>
-                      <input type="text" class="form-control" id="shippingZip" name="shippingZip" value="<?php echo $shippingZip;?>" placeholder="60115">
-                    </div>
-                </div>
-
-                <div class="col box">
-                  <h4 class="center">Billing</h4>
-
-                  <div class="form-group">
-                    <label for="billingStreet">Street</label>
-                    <input type="text" class="form-control" id="billingStreet" name="billingStreet" value="<?php echo $billingStreet;?>" placeholder="123 Franklin St.">
-                  </div>
-
-                  <div class="form-group">
-                    <label for="billingCity">City</label>
-                    <input type="text" class="form-control" id="billingCity" name="billingCity" value="<?php echo $billingCity;?>" placeholder="DeKalb">
-                  </div>
-
-                  <div class="form-group">
-                    <label for="billingState">State</label>
-                    <input type="text" class="form-control" id="billingState" name="billingState" value="<?php echo $billingState;?>" placeholder="Illinois">
-                  </div>
-
-                  <div class="form-group">
-                    <label for="billingZip">Zip Code</label>
-                    <input type="text" class="form-control" id="billingZip" name="billingZip" value="<?php echo $billingZip;?>" placeholder="60115">
-                  </div>
-
-                  <div class="form-check center">
-                    <input type="checkbox" class="form-check-input" id="copyshipping" name="matched"  <?php if (isset($matched) && $quote == true) echo "checked";?>>
-                    <label class="form-check-label" for="copyshipping">Same as shipping Address</label>
-                  </div>
-                </div>
+              <div class="form-group">
+                <label for="listingPrice">Listing Price</label>
+                <input type="number" class="form-control" step="any" id="listingPrice" name="listingPrice" placeholder="0.00">
               </div>
-            </div>
 
-            <div class="box">
-              <h4 class="center">Quote Type</h4>
-    
-              <div class="box center">
-                <div class="row">
-                  <div class="col-6">
-                    <input type="radio" class="form-radio" name="quote" <?php if (isset($quote) && $quote =="auto") echo "checked";?> value="auto" id="auto" autocomplete="off" checked> 
-                    <label for="auto" class="form-radio-label">Auto</label>
-                  </div>
+              <div class="form-group">
+                <label for="partQuantity">Part Quantity</label>
+                <input type="number" class="form-control" id="partQuantity" name="partQuantity" placeholder="0-255">
+              </div>
 
-                  <div class="col-6">
-                    <input type="radio" class="form-radio" name="quote" <?php if (isset($quote) && $quote =="manual") echo "checked";?> value="manual" id="manual" autocomplete="off"> 
-                    <label for="manual" class="form-radio-label">Manual</label>
-                  </div>
-                </div>
+
+              <div class="form-group">
+                <label for="partDescription">Part Description</label>
+                <textarea name="partDescription" id="partDescription" class="form-control" value="<?php echo $comment;?>"  rows="3"></textarea>
               </div>
             </div>
 
