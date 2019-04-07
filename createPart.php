@@ -9,6 +9,23 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
       <link rel="stylesheet" href="./index.css" />
       <title>Request for Quote</title>
+	<?php
+	$servername = "courses";
+	$username = "z1819675";
+	$password = "1994Nov23";
+
+	try 
+	{
+	    $conn = new PDO("mysql:host=$servername;dbname=z1819675", $username, $password);
+	    // set the PDO error mode to exception
+	    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	    echo "Connected successfully"; 
+	}
+	catch(PDOException $e)
+	{
+		echo "Connection failed: " . $e->getMessage();
+	}
+	?>
     </head>
     <body>
       <?php 
@@ -20,7 +37,7 @@
             $partNameErr = "Part name is required.";
           } else {
             $partName = test_input($_POST["partName"]);
-          }
+	  }
 
           if (empty($_POST["manufacturerName"])) {
             $manufacturerNameErr = "Manufacturer name is required.";
@@ -51,6 +68,21 @@
           } else {
             $comment = test_input($_POST["comment"]);
           }
+	
+	  /*************** SQL CODE **************/
+	  if($partNameErr == "" && $manufacturerNameErr == "" && $listPriceErr == "" && $partQuantityErr == "")
+	  {
+		$sql ="INSERT INTO Inventory(Name, Price, Quantity, Description, Manufacturor, Comments)
+		VALUES ('$partName', '$listingPrice', '$partQuantity', '$partDescription', '$manufacturerName', '$comment')";
+
+		//$partName, $listingPrice, $partQuantity, $partDescription, $manufacturerName, $comment)
+		$conn->exec($sql);
+		echo "New record created successfully";
+
+		$conn = null;
+	  }
+
+
 
         }
 
