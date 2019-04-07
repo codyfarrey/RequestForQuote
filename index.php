@@ -15,6 +15,9 @@
         $companyName = $shippingStreet = $shippingCity = $shippingState = $shippingZip = "";
         $matched = $billingStreet = $billingCity = $billingState = $billingZip = $quote = $comment = "";
 
+        $firstName = $lastName = $email = $phone = "";
+        $firstNameErr = $lastNameErr = $emailErr = $phoneErr = "";
+
         $nameErr = $shippingStreetErr = $shippingCityErr = $shippingStateErr = $shippingZipErr = "";
         $billingStreetErr = $billingCityErr = $billingStateErr = $billingZipErr = "";
 
@@ -71,6 +74,30 @@
             $billingZipErr = "Billing zip is required.";
           } else {
             $billingZip = test_input($_POST["billingZip"]);
+          }
+
+          if (empty($_POST["firstName"])) {
+            $firstNameErr = "First name is required.";
+          } else {
+            $firstName = test_input($_POST["firstName"]);
+          }
+
+          if (empty($_POST["lastName"])) {
+            $lastNameErr = "Last name is required.";
+          } else {
+            $lastName = test_input($_POST["lastName"]);
+          }
+
+          if (empty($_POST["email"])) {
+            $emailErr = "Email is required.";
+          } else {
+            $email = test_input($_POST["email"]);
+          }
+
+          if (empty($_POST["phone"])) {
+            $phoneErr = "Phone number is required.";
+          } else {
+            $phone = test_input($_POST["phone"]);
           }
 
           if (empty($_POST["comment"])) {
@@ -152,14 +179,9 @@
               <h4 class="center">Company</h4>
 
               <div class="form-group">
-                <label for="accountNumber">Account Number</label>
-                <input type="text" class="form-control" id="accountNumber" name="accountNumber" placeholder="192378">
-              </div>
-
-              <div class="form-group">
                 <label for="companyName">Company Name</label>
                 <input type="text" class="form-control" id="companyName" name="companyName" value="<?php echo $companyName;?>" placeholder="DeKalb">
-                <span class="error">* <?php echo $nameErr;?></span>
+                <span class="error"><?php echo $nameErr;?></span>
               </div>
             </div>
             
@@ -168,25 +190,29 @@
 
               <div class="row">
                 <div class="col box">
-                  <h4 class="center">shipping</h4>
+                  <h4 class="center">Shipping</h4>
                     <div class="form-group">
                       <label for="shippingStreet">Street</label>
                       <input type="text" class="form-control" id="shippingStreet" name="shippingStreet" value="<?php echo $shippingStreet;?>" placeholder="123 Franklin St.">
+                      <span class="error"><?php echo $shippingStreetErr;?></span>
                     </div>
 
                     <div class="form-group">
                       <label for="shippingCity">City</label>
                       <input type="text" class="form-control" id="shippingCity" name="shippingCity" value="<?php echo $shippingCity;?>" placeholder="DeKalb">
+                      <span class="error"><?php echo $shippingCityErr;?></span>
                     </div>
 
                     <div class="form-group">
                       <label for="shippingState">State</label>
                       <input type="text" class="form-control" id="shippingState" name="shippingState" value="<?php echo $shippingState;?>" placeholder="Illinois">
+                      <span class="error"><?php echo $shippingStateErr;?></span>
                     </div>
 
                     <div class="form-group">
                       <label for="shippingZip">Zip Code</label>
                       <input type="text" class="form-control" id="shippingZip" name="shippingZip" value="<?php echo $shippingZip;?>" placeholder="60115">
+                      <span class="error"><?php echo $shippingZipErr;?></span>                    
                     </div>
                 </div>
 
@@ -196,21 +222,25 @@
                   <div class="form-group">
                     <label for="billingStreet">Street</label>
                     <input type="text" class="form-control" id="billingStreet" name="billingStreet" value="<?php echo $billingStreet;?>" placeholder="123 Franklin St.">
+                    <span class="error"><?php echo $billingStreetErr;?></span>
                   </div>
 
                   <div class="form-group">
                     <label for="billingCity">City</label>
                     <input type="text" class="form-control" id="billingCity" name="billingCity" value="<?php echo $billingCity;?>" placeholder="DeKalb">
+                    <span class="error"><?php echo $billingCityErr;?></span>
                   </div>
 
                   <div class="form-group">
                     <label for="billingState">State</label>
                     <input type="text" class="form-control" id="billingState" name="billingState" value="<?php echo $billingState;?>" placeholder="Illinois">
+                    <span class="error"><?php echo $billingStateErr;?></span>
                   </div>
 
                   <div class="form-group">
                     <label for="billingZip">Zip Code</label>
                     <input type="text" class="form-control" id="billingZip" name="billingZip" value="<?php echo $billingZip;?>" placeholder="60115">
+                    <span class="error"><?php echo $billingZipErr;?></span>
                   </div>
 
                   <div class="form-check center">
@@ -222,32 +252,59 @@
             </div>
 
             <div class="box">
-              <h4 class="center">Quote Type</h4>
-    
-              <div class="box center">
-                <div class="row">
-                  <div class="col-6">
-                    <input type="radio" class="form-radio" name="quote" <?php if (isset($quote) && $quote =="auto") echo "checked";?> value="auto" id="auto" autocomplete="off" checked> 
-                    <label for="auto" class="form-radio-label">Auto</label>
+              <div class="row">
+                <div class="col box">
+                  <h4 class="center">Representative</h4>
+                  <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName" value="<?php echo $firstName;?>" placeholder="123 Franklin St.">
+                    <span class="error"><?php echo $firstNameErr;?></span>
                   </div>
 
-                  <div class="col-6">
-                    <input type="radio" class="form-radio" name="quote" <?php if (isset($quote) && $quote =="manual") echo "checked";?> value="manual" id="manual" autocomplete="off"> 
-                    <label for="manual" class="form-radio-label">Manual</label>
+                  <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName" value="<?php echo $lastName;?>" placeholder="DeKalb">
+                    <span class="error"><?php echo $lastNameErr;?></span>
                   </div>
+
+                  <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="text" class="form-control" id="email" name="email" value="<?php echo $email;?>" placeholder="Illinois">
+                    <span class="error"><?php echo $emailErr;?></span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" class="form-control" id="phone" name="phone" value="<?php echo $phone;?>" placeholder="60115">
+                    <span class="error"><?php echo $phoneErr;?></span>
+                  </div>
+                </div>
+
+                <div class="col center box">
+                <h4 class="center">Comments</h4>
+
+              <div class="box">
+                  <div class="form-group">
+                    <textarea name="comment" class="form-control" value="<?php echo $comment;?>"  rows="14"></textarea>
+                  </div>
+              </div>
+                  
                 </div>
               </div>
             </div>
 
-            <div class="box">
-              <h4 class="center">Comments</h4>
-
-              <div class="box">
-                  <div class="form-group">
-                    <textarea name="comment" class="form-control" value="<?php echo $comment;?>"  rows="3"></textarea>
+            <div class="box center">
+            <h4>Quote Type</h4>
+                <div class="row">
+                  <div class="col">
+                  <input type="radio" class="form-radio" name="quote" <?php if (isset($quote) && $quote =="auto") echo "checked";?> value="auto" id="auto" autocomplete="off" checked> 
+                  <label for="auto" class="form-radio-label">Auto</label>
                   </div>
-              </div>
-
+                  <div class="col">
+                  <input type="radio" class="form-radio" name="quote" <?php if (isset($quote) && $quote =="manual") echo "checked";?> value="manual" id="manual" autocomplete="off"> 
+                  <label for="manual" class="form-radio-label">Manual</label>
+                  </div>
+                </div>
             </div>
 
             <div class="box">
