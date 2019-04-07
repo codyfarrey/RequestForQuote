@@ -12,65 +12,38 @@
     </head>
     <body>
       <?php 
-        $companyName = $shippingStreet = $shippingCity = $shippingState = $shippingZip = "";
-        $matched = $billingStreet = $billingCity = $billingState = $billingZip = $quote = $comment = "";
-
-        $nameErr = $shippingStreetErr = $shippingCityErr = $shippingStateErr = $shippingZipErr = "";
-        $billingStreetErr = $billingCityErr = $billingStateErr = $billingZipErr = "";
+        $partName = $manufacturerName = $listingPrice = $partQuantity = $partDescription = $comment = "";
+        $partNameErr = $manufacturerNameErr = $listPriceErr = $partQuantityErr = "";
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-          if (empty($_POST["companyName"])) {
-            $nameErr = "Company Name is required.";
+          if (empty($_POST["partName"])) {
+            $partNameErr = "Part name is required.";
           } else {
-            $companyName = test_input($_POST["companyName"]);
+            $partName = test_input($_POST["partName"]);
           }
 
-          if (empty($_POST["shippingStreet"])) {
-            $shippingStreetErr = "Shipping street is required.";
+          if (empty($_POST["manufacturerName"])) {
+            $manufacturerNameErr = "Manufacturer name is required.";
           } else {
-            $shippingStreet = test_input($_POST["shippingStreet"]);
+            $manufacturerName = test_input($_POST["manufacturerName"]);
           }
 
-          if (empty($_POST["shippingCity"])) {
-            $shippingCityErr = "Shipping city is required.";
+          if (empty($_POST["listingPrice"])) {
+            $listingPriceErr = "Listing price is required.";
           } else {
-            $shippingCity = test_input($_POST["shippingCity"]);
+            $listingPrice = test_input($_POST["listingPrice"]);
           }
 
-          if (empty($_POST["shippingState"])) {
-            $shippingStateErr = "Shipping state is required.";
+          if (empty($_POST["partQuantity"])) {
+            $partQuantityErr = "Part quantity is required.";
           } else {
-            $shippingState = test_input($_POST["shippingState"]);
+            $partQuantity = test_input($_POST["partQuantity"]);
           }
 
-          if (empty($_POST["shippingZip"])) {
-            $shippingZipErr = "Shipping zip is required.";
+          if (empty($_POST["partDescription"])) {
+            $partDescription = "";
           } else {
-            $shippingZip = test_input($_POST["shippingZip"]);
-          }
-
-          if (empty($_POST["billingStreet"])) {
-            $billingStreetErr = "Billing street is required.";
-          } else {
-            $billingStreet = test_input($_POST["billingStreet"]);
-          }
-
-          if (empty($_POST["billingCity"])) {
-            $billingCityErr = "Billing city is required.";
-          } else {
-            $billingCity = test_input($_POST["billingCity"]);
-          }
-
-          if (empty($_POST["billingState"])) {
-            $billingStateErr = "Billing state is required.";
-          } else {
-            $billingState = test_input($_POST["billingState"]);
-          }
-
-          if (empty($_POST["billingZip"])) {
-            $billingZipErr = "Billing zip is required.";
-          } else {
-            $billingZip = test_input($_POST["billingZip"]);
+            $partDescription = test_input($_POST["partDescription"]);
           }
 
           if (empty($_POST["comment"])) {
@@ -79,30 +52,12 @@
             $comment = test_input($_POST["comment"]);
           }
 
-          if (empty($_POST["quote"])) {
-            $quote = "";
-          } else {
-            $quote = test_input($_POST["quote"]);
-          }
-
-          if (empty($_POST["matched"])) {
-            $matched = "";
-          } else {
-            $matched = test_input($_POST["matched"]);
-	  }
-
         }
 
-	
-	if (isset($_POST["cancel"])) {
-     	    $companyName = $shippingStreet = $shippingCity = ""; 
-	    $shippingState = $shippingZip = $billingStreet =  "";
-	    $billingCity = $billingState = $billingZip = "";
-	    $quote = $comment = $matched = "";
-            $nameErr = $shippingStreetErr = $shippingCityErr = "";
-	    $shippingStateErr = $shippingZipErr = $billingStreetErr = "";
-	    $billingCityErr = $billingStateErr = $billingZipErr = "";
-	}
+        if (isset($_POST["cancel"])) {
+          $partName = $manufacturerName = $listingPrice = $partQuantity = $partDescription = $comment = "";
+          $partNameErr = $manufacturerNameErr = $listPriceErr = $partQuantityErr = "";
+        }
 
         function test_input($data) {
           $data = trim($data);
@@ -150,32 +105,31 @@
           <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
             <div class="box">
               <h4 class="center">Part</h4>
-
               <div class="form-group">
                 <label for="partName">Part Name</label>
-                <input type="text" class="form-control" id="partName" name="partName" placeholder="Part Name">
+                <input type="text" class="form-control" id="partName" name="partName" value="<?php echo $partName;?>" placeholder="Part Name">
               </div>
 
               <div class="form-group">
                 <label for="manufacturerName">Manufacturer Name</label>
-                <input type="text" class="form-control" id="manufacturerName" name="manufacturerName" value="<?php echo $companyName;?>" placeholder="Manufacturer's Name">
-                <span class="error">* <?php echo $nameErr;?></span>
+                <input type="text" class="form-control" id="manufacturerName" name="manufacturerName" value="<?php echo $manufacturerName;?>" placeholder="Manufacturer's Name">
+                <span class="error"><?php echo $manufacturerNameErr;?></span>
               </div>
 
               <div class="form-group">
                 <label for="listingPrice">Listing Price</label>
-                <input type="number" class="form-control" step="any" id="listingPrice" name="listingPrice" placeholder="0.00">
+                <input type="number" class="form-control" step="any" id="listingPrice" name="listingPrice" value="<?php echo $listingPrice;?>"  placeholder="0.00">
               </div>
 
               <div class="form-group">
                 <label for="partQuantity">Part Quantity</label>
-                <input type="number" class="form-control" id="partQuantity" name="partQuantity" placeholder="0-255">
+                <input type="number" class="form-control" id="partQuantity" name="partQuantity" value="<?php echo $partQuantity;?>"  placeholder="0-255">
               </div>
 
 
               <div class="form-group">
                 <label for="partDescription">Part Description</label>
-                <textarea name="partDescription" id="partDescription" class="form-control" value="<?php echo $comment;?>"  rows="3"></textarea>
+                <textarea name="partDescription" id="partDescription" class="form-control" value="<?php echo $partDescription;?>"  rows="3"></textarea>
               </div>
             </div>
 
