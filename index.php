@@ -9,6 +9,23 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
       <link rel="stylesheet" href="./index.css" />
       <title>Request for Quote</title>
+	<?php
+	$servername = "courses";
+	$username = "z1819675";
+	$password = "1994Nov23";
+
+	try 
+	{
+	    $conn = new PDO("mysql:host=$servername;dbname=z1819675", $username, $password);
+	    // set the PDO error mode to exception
+	    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	    echo "Connected successfully"; 
+	}
+	catch(PDOException $e)
+	{
+		echo "Connection failed: " . $e->getMessage();
+	}
+	?>
     </head>
     <body>
       <?php 
@@ -131,14 +148,12 @@
 		$conn->exec($sql);
 
 		/*********** NOT SURE THIS WILL WORK *******************/
-		$myAccount = "SELECT MAX(AccountNumber) FROM CustomerAccount;";
-
+		$myAccount = $conn->query("SELECT MAX(CustomerAccount.AccountNumber) FROM CustomerAccount");	
+		$val = $myAccount->fetch();
 		$sql = "INSERT INTO Address(Street, City, State, Zip, AccountNumber)
-		VALUES ('$shippingStreet', '$shippingCity', '$shippingState', '$shippingZip', '$myAccount')";
+		VALUES ('$shippingStreet', '$shippingCity', '$shippingState', '$shippingZip', '$val')";
 		$conn->exec($sql);
-
 		/*******************************************************/
-
 		$sql = "INSERT INTO Rep()
 		VALUES ('$', '$')";
 		$conn->exec($sql);
@@ -153,9 +168,8 @@
 	}
 
 
+	  /********** CANCEL *************/
         }
-
-	
 	if (isset($_POST["cancel"])) {
      	    $companyName = $shippingStreet = $shippingCity = ""; 
 	    $shippingState = $shippingZip = $billingStreet =  "";
