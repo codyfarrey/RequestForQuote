@@ -81,9 +81,6 @@
 
 		$conn = null;
 	  }
-
-
-
         }
 
         if (isset($_POST["cancel"])) {

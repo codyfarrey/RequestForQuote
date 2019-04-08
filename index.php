@@ -117,6 +117,41 @@
           } else {
             $matched = test_input($_POST["matched"]);
 	  }
+	  /***************** SQL CODE *****************/	
+	if($firstNameErr == "" && $lastNameErr == "" 
+		&& $emailErr == "" && $phoneErr == ""
+		&& $nameErr == "" && $shippingStreetErr == "" 
+		&& $shippingCityErr == "" && $shippingStateErr == ""
+		&& $shippingZipErr == "" && $billingStreetErr == "" 
+		&& $billingCityErr == "" && $billingStateErr == "" 
+		&& $billingZipErr == "")
+	{
+		$sql = "INSERT INTO CustomerAccount(CompanyName, QuoteType)
+		VALUES ('$companyName', '$quote')";
+		$conn->exec($sql);
+
+		/*********** NOT SURE THIS WILL WORK *******************/
+		$myAccount = "SELECT MAX(AccountNumber) FROM CustomerAccount;";
+
+		$sql = "INSERT INTO Address(Street, City, State, Zip, AccountNumber)
+		VALUES ('$shippingStreet', '$shippingCity', '$shippingState', '$shippingZip', '$myAccount')";
+		$conn->exec($sql);
+
+		/*******************************************************/
+
+		$sql = "INSERT INTO Rep()
+		VALUES ('$', '$')";
+		$conn->exec($sql);
+
+		$sql = "INSERT INTO Manager()
+		VALUES ('$', '$')";
+		$conn->exec($sql);
+
+		echo "New record created successfully";
+
+		$conn = null;
+	}
+
 
         }
 
