@@ -23,6 +23,10 @@ h2 {
   color: red;
 }
 
+.feedback {
+  color: rgb(59, 124, 53);
+}
+
 .form-radio {
      -webkit-appearance: none;
      -moz-appearance: none;
