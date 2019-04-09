@@ -19,7 +19,7 @@
 	    $conn = new PDO("mysql:host=$servername;dbname=z1819675", $username, $password);
 	    // set the PDO error mode to exception
 	    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	    echo "Connected successfully"; 
+	    //echo "Connected successfully"; 
 	}
 	catch(PDOException $e)
 	{
@@ -147,26 +147,29 @@
 		VALUES ('$companyName', '$quote')";
 		$conn->exec($sql);
 
+
+
 		/*********** NOT SURE THIS WILL WORK *******************/
-		$myAccount = $conn->query("SELECT MAX(CustomerAccount.AccountNumber) FROM CustomerAccount");	
-		$val = $myAccount->fetch();
-		$sql = "INSERT INTO Address(Street, City, State, Zip, AccountNumber)
-		VALUES ('$shippingStreet', '$shippingCity', '$shippingState', '$shippingZip', '$val')";
+		
+		$myAccount = $conn->prepare("SELECT MAX(AccountNumber) FROM CustomerAccount");	
+		$val = $myAccount->execute();
+		$sql = "INSERT INTO Address(AccountNumber, Street, City, State, Zip)
+		VALUES ('$val', '$shippingStreet', '$shippingCity', '$shippingState', '$shippingZip')";
+
 		$conn->exec($sql);
-		/*******************************************************/
+	 
+		/*******************************************************
 		$sql = "INSERT INTO Rep()
 		VALUES ('$', '$')";
 		$conn->exec($sql);
-
+		/*******************************************************/
 		$sql = "INSERT INTO Manager()
-		VALUES ('$', '$')";
+		VALUES ()";
 		$conn->exec($sql);
 
-		echo "New record created successfully";
-
+		echo '<script> alert("Data Successfully Added");</script>';
 		$conn = null;
 	}
-
 
 	  /********** CANCEL *************/
         }
