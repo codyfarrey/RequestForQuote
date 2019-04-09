@@ -74,23 +74,22 @@
             $comment = test_input($_POST["comment"]);
           }
 	
-          /*************** SQL CODE **************/
-          if($partNameErr == "" && $manufacturerNameErr == "" && $listingPriceErr == "" && $partQuantityErr == "") {
-            $sql ="INSERT INTO inventory(name, price, quantity, description, manufacturer, comments)
-            VALUES ('$partName', '$listingPrice', '$partQuantity', '$partDescription', '$manufacturerName', '$comment')";
+        /*************** SQL CODE **************/
+        if($partNameErr == "" && $manufacturerNameErr == "" && $listingPriceErr == "" && $partQuantityErr == "") {
+          $sql ="INSERT INTO inventory(name, price, quantity, description, manufacturer, comments)
+          VALUES ('$partName', '$listingPrice', '$partQuantity', '$partDescription', '$manufacturerName', '$comment')";
 
-            //$partName, $listingPrice, $partQuantity, $partDescription, $manufacturerName, $comment)
-            $conn->exec($sql);
-            $feedback = "New record created successfully.";
-            $error = "";
-            $partName = $manufacturerName = $listingPrice = $partQuantity = $partDescription = $comment = "";
-            $partNameErr = $manufacturerNameErr = $listingPriceErr = $partQuantityErr = "";
+          //$partName, $listingPrice, $partQuantity, $partDescription, $manufacturerName, $comment)
+          $conn->exec($sql);
+          $feedback = "New record created successfully.";
+          $error = "";
+          $partName = $manufacturerName = $listingPrice = $partQuantity = $partDescription = $comment = "";
+          $partNameErr = $manufacturerNameErr = $listingPriceErr = $partQuantityErr = "";
 
-            $conn = null;
-            } else {
-              $error = "* Please fill out all required fields.";
-              $feedback = "";
-            }
+          $conn = null;
+        } else {
+          $error = "* Please fill out all required fields.";
+          $feedback = "";
         }
 
         function test_input($data) {

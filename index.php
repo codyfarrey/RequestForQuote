@@ -9,6 +9,22 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
       <link rel="stylesheet" href="./index.css" />
       <title>Request for Quote</title>
+	<?php
+	$servername = "courses";
+	$username = "z1819675";
+	$password = "1994Nov23";
+
+	try 
+	{
+	    $conn = new PDO("mysql:host=$servername;dbname=z1819675", $username, $password);
+	    // set the PDO error mode to exception
+	    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	}
+	catch(PDOException $e)
+	{
+		echo "Connection failed: " . $e->getMessage();
+	}
+	?>
     </head>
     <body>
       <?php 
@@ -117,10 +133,47 @@
           } else {
             $matched = test_input($_POST["matched"]);
 	  }
+	  /***************** SQL CODE *****************/	
+	if($firstNameErr == "" && $lastNameErr == "" 
+		&& $emailErr == "" && $phoneErr == ""
+		&& $nameErr == "" && $shippingStreetErr == "" 
+		&& $shippingCityErr == "" && $shippingStateErr == ""
+		&& $shippingZipErr == "" && $billingStreetErr == "" 
+		&& $billingCityErr == "" && $billingStateErr == "" 
+		&& $billingZipErr == "")
+	{
 
+		$sql = "INSERT INTO CustomerAccount(CompanyName, QuoteType)
+		VALUES ('$companyName', '$quote') ON DUPLICATE KEY UPDATE QuoteType = '$quote'";
+		$conn->exec($sql);
+
+
+		/*********** FIXED ISSUE HERE *******************/
+		$myAccount = $conn->query("SELECT CustomerAccount.AccountNumber FROM CustomerAccount WHERE CompanyName='". $companyName."'");
+		$myAccount->execute();
+		$val = $myAccount->fetch(PDO::FETCH_BOTH);
+
+		$sql = "INSERT INTO ShippingAddress(AccountNumber, Street, City, State, Zip)
+		VALUES ('$val[0]', '$shippingStreet', '$shippingCity', '$shippingState', '$shippingZip')";
+		$conn->exec($sql);
+
+		$sql = "INSERT INTO BillingAddress(AccountNumber, Street, City, State, Zip)
+		VALUES ('$val[0]', '$billingStreet', '$billingCity', '$billingState', '$billingZip')";
+		$conn->exec($sql);
+
+		$sql = "INSERT INTO Rep(FirstName, LastName, Email, Phone, AccountNumber)
+		VALUES ('$firstName', '$lastName', '$email', '$phone', '$val[0]')";
+		$conn->exec($sql);
+/*
+		$sql = "INSERT INTO Manager(FirstName, LastName, Email, Phone)
+		VALUES ()";
+		$conn->exec($sql);
+ */
+		echo '<script> alert("Data Successfully Added");</script>';
+		$conn = null;
+	}
+	  /********** CANCEL *************/
         }
-
-	
 	if (isset($_POST["cancel"])) {
      	    $companyName = $shippingStreet = $shippingCity = ""; 
 	    $shippingState = $shippingZip = $billingStreet =  "";
