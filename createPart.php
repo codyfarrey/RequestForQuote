@@ -76,10 +76,9 @@
 	
           /*************** SQL CODE **************/
           if($partNameErr == "" && $manufacturerNameErr == "" && $listingPriceErr == "" && $partQuantityErr == "") {
-            $sql ="INSERT INTO Inventory(Name, Price, Quantity, Description, Manufacturor, Comments)
+            $sql ="INSERT INTO Inventory(Name, Price, Quantity, Description, Manufacturer, Comments)
             VALUES ('$partName', '$listingPrice', '$partQuantity', '$partDescription', '$manufacturerName', '$comment')";
 
-            //$partName, $listingPrice, $partQuantity, $partDescription, $manufacturerName, $comment)
             $conn->exec($sql);
             $feedback = "New record created successfully.";
             $error = "";
