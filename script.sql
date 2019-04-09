@@ -1,8 +1,8 @@
-DROP TABLE CustomerAccount;
 DROP TABLE Address;
 DROP TABLE Rep;
 DROP TABLE Manager;
 DROP TABLE Inventory;
+DROP TABLE CustomerAccount;
 
 CREATE TABLE CustomerAccount( 
 AccountNumber INTEGER AUTO_INCREMENT NOT NULL, 
