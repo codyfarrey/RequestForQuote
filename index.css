@@ -2,10 +2,6 @@
   text-align: center;
 }
 
-h2 {
-  margin: 0.5em;
-}
-
 .quote-selector {
   font-size: 3em;
 }
@@ -21,6 +17,10 @@ h2 {
 
 .error {
   color: red;
+}
+
+.feedback {
+  color: rgb(59, 124, 53);
 }
 
 .form-radio {

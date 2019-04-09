@@ -9,6 +9,7 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
       <link rel="stylesheet" href="./index.css" />
       <title>Request for Quote</title>
+      <?php require 'auth.php'; ?>
     </head>
     <body>
       <?php 
@@ -16,14 +17,10 @@
         $partNameErr = $manufacturerNameErr = $listingPriceErr = $partQuantityErr = "";
 
         $feedback = $error = "";
-
-        $servername = "courses";
-        $username = "z1819675";
-        $password = "1994Nov23";
       
         try 
         {
-            $conn = new PDO("mysql:host=$servername;dbname=z1819675", $username, $password);
+            $conn = new PDO("mysql:host=$servername;dbname=$username", $username, $password);
             // set the PDO error mode to exception
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
@@ -79,7 +76,7 @@
 	
           /*************** SQL CODE **************/
           if($partNameErr == "" && $manufacturerNameErr == "" && $listingPriceErr == "" && $partQuantityErr == "") {
-            $sql ="INSERT INTO Inventory(Name, Price, Quantity, Description, Manufacturor, Comments)
+            $sql ="INSERT INTO inventory(name, price, quantity, description, manufacturer, comments)
             VALUES ('$partName', '$listingPrice', '$partQuantity', '$partDescription', '$manufacturerName', '$comment')";
 
             //$partName, $listingPrice, $partQuantity, $partDescription, $manufacturerName, $comment)
@@ -100,6 +97,7 @@
           $data = trim($data);
           $data = stripslashes($data);
           $data = htmlspecialchars($data);
+          $data = str_replace("'", '', $data);
           return $data;
         }
 
