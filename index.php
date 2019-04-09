@@ -142,25 +142,33 @@
 		&& $billingCityErr == "" && $billingStateErr == "" 
 		&& $billingZipErr == "")
 	{
+
 		$sql = "INSERT INTO CustomerAccount(CompanyName, QuoteType)
-		VALUES ('$companyName', '$quote')";
-		$conn->exec($sql);
-		/*********** FIXED ISSUE HERE *******************/
-		$myAccount = $conn->query("SELECT CustomerAccount.AccountNumber FROM CustomerAccount WHERE CompanyName='". $companyName."'");	
-		$myAccount->execute();
-		$val = $myAccount->fetch(PDO::FETCH_BOTH);
-		$sql = "INSERT INTO Address(AccountNumber, Street, City, State, Zip)
-		VALUES ('$val[0]', '$shippingStreet', '$shippingCity', '$shippingState', '$shippingZip')";
-		$conn->exec($sql);
-		/******************** STILL NEEDS FIXING ***********************************
-		$sql = "INSERT INTO Rep()
-		VALUES ('$', '$')";
-		$conn->exec($sql);
-		/*******************************************************/
-		$sql = "INSERT INTO Manager()
-		VALUES ()";
+		VALUES ('$companyName', '$quote') ON DUPLICATE KEY UPDATE QuoteType = '$quote'";
 		$conn->exec($sql);
 
+
+		/*********** FIXED ISSUE HERE *******************/
+		$myAccount = $conn->query("SELECT CustomerAccount.AccountNumber FROM CustomerAccount WHERE CompanyName='". $companyName."'");
+		$myAccount->execute();
+		$val = $myAccount->fetch(PDO::FETCH_BOTH);
+
+		$sql = "INSERT INTO ShippingAddress(AccountNumber, Street, City, State, Zip)
+		VALUES ('$val[0]', '$shippingStreet', '$shippingCity', '$shippingState', '$shippingZip')";
+		$conn->exec($sql);
+
+		$sql = "INSERT INTO BillingAddress(AccountNumber, Street, City, State, Zip)
+		VALUES ('$val[0]', '$billingStreet', '$billingCity', '$billingState', '$billingZip')";
+		$conn->exec($sql);
+
+		$sql = "INSERT INTO Rep(FirstName, LastName, Email, Phone, AccountNumber)
+		VALUES ('$firstName', '$lastName', '$email', '$phone', '$val[0]')";
+		$conn->exec($sql);
+/*
+		$sql = "INSERT INTO Manager(FirstName, LastName, Email, Phone)
+		VALUES ()";
+		$conn->exec($sql);
+ */
 		echo '<script> alert("Data Successfully Added");</script>';
 		$conn = null;
 	}
