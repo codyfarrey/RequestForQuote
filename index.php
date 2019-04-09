@@ -19,7 +19,6 @@
 	    $conn = new PDO("mysql:host=$servername;dbname=z1819675", $username, $password);
 	    // set the PDO error mode to exception
 	    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	    //echo "Connected successfully"; 
 	}
 	catch(PDOException $e)
 	{
@@ -146,19 +145,14 @@
 		$sql = "INSERT INTO CustomerAccount(CompanyName, QuoteType)
 		VALUES ('$companyName', '$quote')";
 		$conn->exec($sql);
-
-
-
-		/*********** NOT SURE THIS WILL WORK *******************/
-		
-		$myAccount = $conn->prepare("SELECT MAX(AccountNumber) FROM CustomerAccount");	
-		$val = $myAccount->execute();
+		/*********** FIXED ISSUE HERE *******************/
+		$myAccount = $conn->query("SELECT CustomerAccount.AccountNumber FROM CustomerAccount WHERE CompanyName='". $companyName."'");	
+		$myAccount->execute();
+		$val = $myAccount->fetch(PDO::FETCH_BOTH);
 		$sql = "INSERT INTO Address(AccountNumber, Street, City, State, Zip)
-		VALUES ('$val', '$shippingStreet', '$shippingCity', '$shippingState', '$shippingZip')";
-
+		VALUES ('$val[0]', '$shippingStreet', '$shippingCity', '$shippingState', '$shippingZip')";
 		$conn->exec($sql);
-	 
-		/*******************************************************
+		/******************** STILL NEEDS FIXING ***********************************
 		$sql = "INSERT INTO Rep()
 		VALUES ('$', '$')";
 		$conn->exec($sql);
@@ -170,7 +164,6 @@
 		echo '<script> alert("Data Successfully Added");</script>';
 		$conn = null;
 	}
-
 	  /********** CANCEL *************/
         }
 	if (isset($_POST["cancel"])) {
