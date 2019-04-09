@@ -363,11 +363,11 @@
             <div class="box">
               <div class="row">
                 <div class="col-6 center">
-                  <button type="button" name="cancel" class="btn btn-secondary btn-lg">Cancel</button>
+                  <button type="reset" name="cancel" class="btn btn-secondary btn-lg">Clear</button>
                 </div>
 
                 <div class="col-6 center">
-                  <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                  <button type="submit" class="btn btn-primary btn-lg">Create</button>
                 </div>
               </div>
             </div>

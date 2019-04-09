@@ -9,35 +9,40 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
       <link rel="stylesheet" href="./index.css" />
       <title>Request for Quote</title>
-	<?php
-	$servername = "courses";
-	$username = "z1819675";
-	$password = "1994Nov23";
-
-	try 
-	{
-	    $conn = new PDO("mysql:host=$servername;dbname=z1819675", $username, $password);
-	    // set the PDO error mode to exception
-	    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	    echo "Connected successfully"; 
-	}
-	catch(PDOException $e)
-	{
-		echo "Connection failed: " . $e->getMessage();
-	}
-	?>
+      <?php require 'auth.php'; ?>
     </head>
     <body>
       <?php 
         $partName = $manufacturerName = $listingPrice = $partQuantity = $partDescription = $comment = "";
-        $partNameErr = $manufacturerNameErr = $listPriceErr = $partQuantityErr = "";
+        $partNameErr = $manufacturerNameErr = $listingPriceErr = $partQuantityErr = "";
+
+        $feedback = $error = "";
+      
+        try 
+        {
+            $conn = new PDO("mysql:host=$servername;dbname=$username", $username, $password);
+            // set the PDO error mode to exception
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        }
+        catch(PDOException $e)
+        {
+          $error = "Connection failed: " . $e->getMessage();
+        }
+
+        if (isset($_POST["cancel"])) {
+          $partName = $manufacturerName = $listingPrice = $partQuantity = $partDescription = $comment = "";
+          $partNameErr = $manufacturerNameErr = $listingPriceErr = $partQuantityErr = "";
+
+          echo "CANCEL CLICKED";
+        }
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
+          /*************** Form Validation and Populating Variables **************/
           if (empty($_POST["partName"])) {
             $partNameErr = "Part name is required.";
           } else {
             $partName = test_input($_POST["partName"]);
-	  }
+	        }
 
           if (empty($_POST["manufacturerName"])) {
             $manufacturerNameErr = "Manufacturer name is required.";
@@ -69,29 +74,29 @@
             $comment = test_input($_POST["comment"]);
           }
 	
-	  /*************** SQL CODE **************/
-	  if($partNameErr == "" && $manufacturerNameErr == "" && $listPriceErr == "" && $partQuantityErr == "")
-	  {
-		$sql ="INSERT INTO Inventory(Name, Price, Quantity, Description, Manufacturor, Comments)
-		VALUES ('$partName', '$listingPrice', '$partQuantity', '$partDescription', '$manufacturerName', '$comment')";
+        /*************** SQL CODE **************/
+        if($partNameErr == "" && $manufacturerNameErr == "" && $listingPriceErr == "" && $partQuantityErr == "") {
+          $sql ="INSERT INTO inventory(name, price, quantity, description, manufacturer, comments)
+          VALUES ('$partName', '$listingPrice', '$partQuantity', '$partDescription', '$manufacturerName', '$comment')";
 
-		//$partName, $listingPrice, $partQuantity, $partDescription, $manufacturerName, $comment)
-		$conn->exec($sql);
-		echo "New record created successfully";
-
-		$conn = null;
-	  }
-        }
-
-        if (isset($_POST["cancel"])) {
+          //$partName, $listingPrice, $partQuantity, $partDescription, $manufacturerName, $comment)
+          $conn->exec($sql);
+          $feedback = "New record created successfully.";
+          $error = "";
           $partName = $manufacturerName = $listingPrice = $partQuantity = $partDescription = $comment = "";
-          $partNameErr = $manufacturerNameErr = $listPriceErr = $partQuantityErr = "";
+          $partNameErr = $manufacturerNameErr = $listingPriceErr = $partQuantityErr = "";
+
+          $conn = null;
+        } else {
+          $error = "* Please fill out all required fields.";
+          $feedback = "";
         }
 
         function test_input($data) {
           $data = trim($data);
           $data = stripslashes($data);
           $data = htmlspecialchars($data);
+          $data = str_replace("'", '', $data);
           return $data;
         }
 
@@ -137,6 +142,7 @@
               <div class="form-group">
                 <label for="partName">Part Name</label>
                 <input type="text" class="form-control" id="partName" name="partName" value="<?php echo $partName;?>" placeholder="Part Name">
+                <span class="error"><?php echo $partNameErr;?></span>
               </div>
 
               <div class="form-group">
@@ -148,11 +154,13 @@
               <div class="form-group">
                 <label for="listingPrice">Listing Price</label>
                 <input type="number" class="form-control" step="any" id="listingPrice" name="listingPrice" value="<?php echo $listingPrice;?>"  placeholder="0.00">
+                <span class="error"><?php echo $listingPriceErr;?></span>
               </div>
 
               <div class="form-group">
                 <label for="partQuantity">Part Quantity</label>
                 <input type="number" class="form-control" id="partQuantity" name="partQuantity" value="<?php echo $partQuantity;?>"  placeholder="0-255">
+                <span class="error"><?php echo $partQuantityErr;?></span>
               </div>
 
 
@@ -173,14 +181,16 @@
 
             </div>
 
-            <div class="box">
+            <div class="box center">
+              <span class="feedback"><?php echo $feedback;?></span>
+              <span class="error"><?php echo $error; ?></span>
               <div class="row">
                 <div class="col-6 center">
-                  <button type="button" name="cancel" class="btn btn-secondary btn-lg">Cancel</button>
+                  <button type="reset" name="cancel" class="btn btn-secondary btn-lg">Cancel</button>
                 </div>
 
                 <div class="col-6 center">
-                  <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                  <button type="submit" class="btn btn-primary btn-lg">Create</button>
                 </div>
               </div>
             </div>
