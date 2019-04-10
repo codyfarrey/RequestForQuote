@@ -114,38 +114,23 @@ crossorigin="anonymous">
 
       <div class="row">
         <div class="col-12">
-          <h2 class="center">Manager Login</h2>
+          <h2 class="center">Please select an option.</h2>
         </div>
       </div>
 
-      <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
-        <div class="box">
-          <div class="form-group">
-            <label for="companyName">Manager E-Mail</label>
-            <input type="text" class="form-control" id="email" name="email" value="<?php echo $userEmail;?>" placeholder="dudeguy@email.com">
-            <span class="error"><?php echo $emailErr;?></span>
-          </div>
-          <div class="form-group">
-            <label for="companyName">Manager Password</label>
-            <input type="password" class="form-control" id="password" name="password" value="<?php echo $userPassword;?>" placeholder="********">
-            <span class="error"><?php echo $passwordErr;?></span>
-          </div>
-        </div>
-        <div class="box center">
-          <span class="feedback"><?php echo $feedback;?></span>
-          <span class="error"><?php echo $error; ?></span>
-          <div class="row">
+      <div class="row">
             <div class="col-6 center">
-              <button type="reset" name="cancel" class="btn btn-secondary btn-lg">Reset</button>
+              <a href="./repLogin.php">
+              <button type="button" class="btn btn-primary btn-lg">Representative Login</button>
+              </a>
             </div>
 
             <div class="col-6 center">
-              <button type="submit" class="btn btn-primary btn-lg">Login</button>
+            <a href="./managerLogin.php">
+              <button type="button" class="btn btn-primary btn-lg">Manager Login</button>
+              </a>
             </div>
           </div>
-        </div>
-
-      </form>
 
     </div>
   </main>

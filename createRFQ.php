@@ -29,6 +29,8 @@
 
         $partId = $partIdErr = $quantity = $quantityErr = $date = $dateErr = "";
 
+        $rfqId = "";
+
         $error = $feedback = "";
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -57,8 +59,10 @@
 
               mysqli_query($conn, $sql);
 
+              $rfqId = mysql_insert_id();
+
               $sql = "INSERT INTO RFQDetail(RFQID, PartID, Quantity, DateRequired) VALUES
-              (1, '$partId', '$quantity', '$date')";
+              ($rfqId, '$partId', '$quantity', '$date')";
 
               if (mysqli_query($conn, $sql)) {
                 $feedback = "Submitted Request For Quote Succesfully.";
