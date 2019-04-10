@@ -1,5 +1,5 @@
 <?php
     $servername = "courses";
-    $username = "z1800722";
-    $password = "1995Mar25";
+    $username = "z1819675";
+    $password = "1994Nov23";
 ?>
