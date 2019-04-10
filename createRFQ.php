@@ -30,37 +30,28 @@
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
           /*************** Form Validation and Populating Variables **************/
-          if (empty($_POST["repEmail"])) {
-            $repEmailErr = "Email is required.";
-          } else {
-            $repEmail = test_input($_POST["repEmail"]);
-	        }
+            if (empty($_POST["partId"])) {
+              $partIdErr = "Part Id is required.";
+            } else {
+              $partId = test_input($_POST["partId"]);
+            }
 
-          if (empty($_POST["repPassword"])) {
-            $repPasswordErr = "Password is required.";
-          } else {
-            $repPassword = test_input($_POST["repPassword"]);
-          }
+            if (empty($_POST["quantity"])) {
+              $quantityErr = "Quantity is required.";
+            } else {
+              $quantity = test_input($_POST["quantity"]);
+            }
+
+            if (empty($_POST["date"])) {
+              $dateErr = "Date is required.";
+            } else {
+              $date = test_input($_POST["date"]);
+            }
+        }
 
           
           /*************** SQL CODE **************/
-          if(empty($repEmailErr) && empty($repPasswordErr)) {
-            $sql = "SELECT AccountNumber, Email, Password FROM Rep WHERE Email LIKE ('$repEmail')";
-            $result = $conn->query($sql);
-
-            if ($result->num_rows > 0) {
-              while ($row = $result->fetch_assoc()) {
-                if ($repEmail == $row["Email"] && $repPassword == $row["Password"]) {
-                  $accountNumber = $row["AccountNumber"];
-                } else {
-                  echo "Invalid Password.";
-                }
-              }
-            } else {
-              echo "Invalid Email";
-            }
-          }
-        }
+          
 
         function test_input($data) {
           $data = trim($data);
@@ -109,41 +100,7 @@
             </div>
           </div>
 
-          <?php if (empty($accountNumber)): ?>
-          <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
-            <div class="box">
-              <h4 class="center">Customer</h4>
-              <div class="box">
-                <div class="form-group">
-                  <label for="repEmail">Customer Representative Email</label>
-                  <input type="text" class="form-control" id="repEmail" name="repEmail" value="<?php echo $repEmail;?>" placeholder="rep@email.com">
-                  <span class="error"><?php echo $repEmailErr;?></span>
-                </div>
-
-                <div class="form-group">
-                  <label for="repPassword">Password</label>
-                  <input type="text" class="form-control" id="repPassword" name="repPassword" value="<?php echo $repPassword;?>" placeholder="********">
-                  <span class="error"><?php echo $repPasswordErr;?></span>
-                </div>
-              </div>
-
-              <div class="box center">
-                <span class="feedback"><?php echo $feedback;?></span>
-                <span class="error"><?php echo $error; ?></span>
-                <div class="row">
-                  <div class="col-6 center">
-                    <button type="reset" name="cancel" class="btn btn-secondary btn-lg">Cancel</button>
-                  </div>
-
-                  <div class="col-6 center">
-                    <button type="submit" class="btn btn-primary btn-lg">Create</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-          <?php else: ?>
-          <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
+          <form id="rfqForm" method="POST">
             <div class="box">
               <h4 class="center">RFQ</h4>
               <div class="box">
@@ -154,7 +111,7 @@
                     $sql = "SELECT PartID, Name FROM Inventory";
                     $result = $conn->query($sql);
 
-                    echo '<select class="form-control" name="partId">';
+                    echo '<select class="form-control" name="partId" form="rfqForm">';
                     
                     if ($result->num_rows > 0) {
                       while ($row = $result->fetch_assoc()) {
@@ -191,13 +148,13 @@
                   </div>
 
                   <div class="col-6 center">
-                    <button type="submit" class="btn btn-primary btn-lg">Create</button>
+                    <button type="submit" form="rfqForm" class="btn btn-primary btn-lg">Create</button>
                   </div>
                 </div>
               </div>
             </div>
           </form>
-          <?php endif; ?>
+
         </div>
 	    </main>
 
