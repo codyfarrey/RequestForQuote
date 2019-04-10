@@ -21,12 +21,15 @@
     </head>
     <body>
       <?php 
+
+        session_start();
+        $accountNumber = $_SESSION['accountNumber'];
+
         $repEmail = $repPassword = $repEmailErr = $repPasswordErr = "";
-        $feedback = $error = $accountNumber = "";
 
         $partId = $partIdErr = $quantity = $quantityErr = $date = $dateErr = "";
 
-        $parts = [];
+        $error = $feedback = "";
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
           /*************** Form Validation and Populating Variables **************/
@@ -47,10 +50,31 @@
             } else {
               $date = test_input($_POST["date"]);
             }
+
+            if (!empty($accountNumber) && empty($partIdErr) && empty($quantityErr) && empty($dateErr)) {
+              $sql ="INSERT INTO RFQ(AccountNumber)
+              VALUES ('$accountNumber')";
+
+              mysqli_query($conn, $sql);
+
+              $sql = "INSERT INTO RFQDetail(RFQID, PartID, Quantity, DateRequired) VALUES
+              (1, '$partId', '$quantity', '$date')";
+
+              if (mysqli_query($conn, $sql)) {
+                $feedback = "Submitted Request For Quote Succesfully.";
+                $error = "";
+              } else {
+                $error = "Error: " . $sql . "" . mysqli_error($conn);
+                $feedback = "";
+              }
+
+              
+            } else {
+              $error = "Please fill in data properly.";
+              $feedback = "";
+            }
         }
 
-          
-          /*************** SQL CODE **************/
           
 
         function test_input($data) {

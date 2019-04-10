@@ -47,14 +47,15 @@ crossorigin="anonymous">
       // If found email
       // set $email and $password
 
-      $sql = "SELECT Email, Password FROM Manager WHERE Email LIKE ('$userEmail')";
+      $sql = "SELECT AccountNumber, Email, Password FROM Rep WHERE Email LIKE ('$userEmail')";
       $result = $conn->query($sql);
 
       if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
           if ($userEmail == $row["Email"] && $userPassword == $row["Password"]) {
-            echo "Logged in as " . $row["Email"] . ".";
-            header("Location: /~z1800722/rfq/createCustomer.php");
+            session_start();
+            $_SESSION['accountNumber'] = $row['AccountNumber'];
+            header("Location: /~z1800722/rfq/createRFQ.php");
           } else {
             echo "Invalid Password.";
           }
