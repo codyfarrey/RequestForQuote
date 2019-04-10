@@ -22,15 +22,7 @@
     <body>
       <?php 
 
-        session_start();
-        $accountNumber = $_SESSION['accountNumber'];
-
-        $repEmail = $repPassword = $repEmailErr = $repPasswordErr = "";
-
-        $partId = $partIdErr = $quantity = $quantityErr = $date = $dateErr = "";
-
-        $rfqId = "";
-
+        $report = $startDate = $endDate = $startDateErr = $endDateErr = "";
         $error = $feedback = "";
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -124,50 +116,72 @@
 
           <div class="row">
             <div class="col-12">
-              <h2 class="center">Create Request For Quote</h2>
+              <h2 class="center">Generate RFQ Report</h2>
             </div>
           </div>
 
           <form id="rfqForm" method="POST">
-            <div class="box">
-              <h4 class="center">RFQ</h4>
-              <div class="box">
-                <div class="form-group">
-
-                  <label for="partId">Part</label>
-                  <?php
-                    $sql = "SELECT PartID, Name FROM Inventory";
-                    $result = $conn->query($sql);
-
-                    echo '<select class="form-control" name="partId" form="rfqForm">';
-                    
-                    if ($result->num_rows > 0) {
-                      while ($row = $result->fetch_assoc()) {
-                        echo '<option value="' .$row['PartID'].'">'.$row['Name'].'</option>';
-                      }
-                    }
-
-                    echo '</select>';
-        
-                    $conn = null;
-                  ?>
-                  <span class="error"><?php echo $partIdErr;?></span>
+          <div class="box center">
+          <h4>Report Type</h4>
+              <div class="row">
+                <div class="col">
+                <input type="radio" class="form-radio" name="report" <?php if (isset($report) && $report =="summary") echo "checked";?> value="summary" id="summary" autocomplete="off" checked> 
+                <label for="auto" class="form-radio-label">Summary</label>
                 </div>
-
-                <div class="form-group">
-                  <label for="quantity">Quantity</label>
-                  <input type="number" class="form-control" id="quantity" name="quantity" value="<?php echo $quantity;?>">
-                  <span class="error"><?php echo $quantityErr;?></span>
+                <div class="col">
+                <input type="radio" class="form-radio" name="report" <?php if (isset($report) && $report =="detail") echo "checked";?> value="detail" id="detail" autocomplete="off"> 
+                <label for="manual" class="form-radio-label">Detail</label>
                 </div>
+              </div>
+          </div>
 
+          <div class="box">
+            <h4 class="center">Date</h4>
+            <div class="row">
+              <div class="col">
                 <div class="form-group">
-                  <label for="date">Date Required</label>
-                  <input type="date" class="form-control" id="date" name="date" value="<?php echo $date;?>" min="<?php echo date("d/m/Y") ?>">
-                  <span class="error"><?php echo $dateErr;?></span>
+                    <label for="startDate">Start Date</label>
+                    <input type="date" class="form-control" id="startDate" name="startDate" value="<?php echo $startDate;?>" min="<?php echo date("d/m/Y") ?>">
+                    <span class="error"><?php echo $startDateErr;?></span>
                 </div>
               </div>
 
-              <div class="box center">
+              <div class="col">
+                <div class="form-group">
+                    <label for="endDate">End Date</label>
+                    <input type="date" class="form-control" id="endDate" name="endDate" value="<?php echo $endDate;?>" min="<?php echo date("d/m/Y") ?>">
+                    <span class="error"><?php echo $endDateErr;?></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="box">
+            <h4 class="center">Content</h4>
+            <div class="row">
+              <div class="col">
+                <input type="checkbox" class="form-check" name="contet[]" <?php if (isset($report) && $report =="all") echo "checked";?> value="all" id="all" autocomplete="off"> 
+                <label for="all" class="form-check-label">Select All</label>
+                <br />
+                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="rfqId") echo "checked";?> value="rfqId" id="rfqId" autocomplete="off"> 
+                <label for="rfqId" class="form-check-label">Request For Quote</label>
+                <br />
+                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="customerId") echo "checked";?> value="customerId" id="customerId" autocomplete="off"> 
+                <label for="customerId" class="form-check-label">Customer Account</label>
+              </div>
+              <div class="col">
+                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="partId") echo "checked";?> value="partId" id="partId" autocomplete="off"> 
+                <label for="partId" class="form-check-label">Part</label>
+                <br />
+                <input type="checkbox" class="form-check" name="centent[]" <?php if (isset($report) && $report =="partName") echo "checked";?> value="partName" id="partName" autocomplete="off"> 
+                <label for="partName" class="form-check-label">Part Quantity</label>
+                <br />
+                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="partPrice") echo "checked";?> value="partPrice" id="partPrice" autocomplete="off"> 
+                <label for="partPrice" class="form-check-label">Part Price</label>
+              </div>
+            </div>
+          </div>
+          <div class="box center">
                 <span class="feedback"><?php echo $feedback;?></span>
                 <span class="error"><?php echo $error; ?></span>
                 <div class="row">
@@ -176,13 +190,11 @@
                   </div>
 
                   <div class="col-6 center">
-                    <button type="submit" form="rfqForm" class="btn btn-primary btn-lg">Create</button>
+                    <button type="submit" form="rfqForm" class="btn btn-primary btn-lg">Generate</button>
                   </div>
                 </div>
-              </div>
             </div>
           </form>
-
         </div>
 	    </main>
 
