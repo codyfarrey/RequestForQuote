@@ -13,8 +13,10 @@
     </head>
     <body>
       <?php 
-        $partName = $manufacturerName = $listingPrice = $partQuantity = $partDescription = $comment = "";
-        $partNameErr = $manufacturerNameErr = $listingPriceErr = $partQuantityErr = "";
+        $repEmail = $repPassword = $repEmailErr = $repPasswordErr = "";
+
+        $partName = $repPassword = $listingPrice = $partQuantity = $partDescription = $comment = "";
+        $partNameErr = $repPasswordErr = $listingPriceErr = $partQuantityErr = "";
 
         $feedback = $error = "";
       
@@ -105,7 +107,7 @@
 
       <!-- NAVBAR -->
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Request For Quote</a>
+        <a class="navbar-brand" href="#">RFQ</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -135,42 +137,38 @@
 
           <div class="row">
             <div class="col-12">
-              <h2 class="center">Create New Part</h2>
+              <h2 class="center">Create Request For Quote</h2>
             </div>
           </div>
 
           <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
             <div class="box">
-              <h4 class="center">Part</h4>
+              <h4 class="center">Customer</h4>
               <div class="box">
                 <div class="form-group">
-                  <label for="partName">Part Name</label>
-                  <input type="text" class="form-control" id="partName" name="partName" value="<?php echo $partName;?>" placeholder="Part Name">
-                  <span class="error"><?php echo $partNameErr;?></span>
+                  <label for="repEmail">Customer Representative Email</label>
+                  <input type="text" class="form-control" id="repEmail" name="repEmail" value="<?php echo $repEmail;?>" placeholder="rep@email.com">
+                  <span class="error"><?php echo $repEmailErr;?></span>
                 </div>
 
                 <div class="form-group">
-                  <label for="manufacturerName">Manufacturer Name</label>
-                  <input type="text" class="form-control" id="manufacturerName" name="manufacturerName" value="<?php echo $manufacturerName;?>" placeholder="Manufacturer's Name">
-                  <span class="error"><?php echo $manufacturerNameErr;?></span>
+                  <label for="repPassword">Password</label>
+                  <input type="text" class="form-control" id="repPassword" name="repPassword" value="<?php echo $repPassword;?>" placeholder="********">
+                  <span class="error"><?php echo $repPasswordErr;?></span>
                 </div>
+              </div>
 
-                <div class="form-group">
-                  <label for="listingPrice">Listing Price</label>
-                  <input type="number" class="form-control" step="any" id="listingPrice" name="listingPrice" value="<?php echo $listingPrice;?>"  placeholder="0.00">
-                  <span class="error"><?php echo $listingPriceErr;?></span>
-                </div>
+              <div class="box center">
+                <span class="feedback"><?php echo $feedback;?></span>
+                <span class="error"><?php echo $error; ?></span>
+                <div class="row">
+                  <div class="col-6 center">
+                    <button type="reset" name="cancel" class="btn btn-secondary btn-lg">Cancel</button>
+                  </div>
 
-                <div class="form-group">
-                  <label for="partQuantity">Part Quantity</label>
-                  <input type="number" class="form-control" id="partQuantity" name="partQuantity" value="<?php echo $partQuantity;?>"  placeholder="0-255">
-                  <span class="error"><?php echo $partQuantityErr;?></span>
-                </div>
-
-
-                <div class="form-group">
-                  <label for="partDescription">Part Description</label>
-                  <textarea name="partDescription" id="partDescription" class="form-control" value="<?php echo $partDescription;?>"  rows="3"></textarea>
+                  <div class="col-6 center">
+                    <button type="submit" class="btn btn-primary btn-lg">Create</button>
+                  </div>
                 </div>
               </div>
             </div>

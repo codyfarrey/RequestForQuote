@@ -17,9 +17,6 @@ crossorigin="anonymous">
     if ($conn->connect_error) {
       die("Connection failed: " . $conn->connect_error);
     }
-    // set the PDO error mode to exception
-    
-
 ?>
 </head>
 
@@ -94,10 +91,13 @@ crossorigin="anonymous">
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="#">Log In<span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
+          <a class="nav-link" href="./createCustomer.php">Create Customer</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./createPart.php">Create Part</a>
         </li>
       </ul>
       <form class="form-inline my-2 my-lg-0">
