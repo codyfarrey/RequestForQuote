@@ -135,37 +135,39 @@ crossorigin="anonymous">
       $matched = test_input($_POST["matched"]);
     }
 
-    /***************** SQL CODE *****************/	
+    /***************** BEGINNING OF SQL INSERTION CODE *****************/	
     if($firstNameErr == "" && $lastNameErr == "" && $emailErr == "" && $phoneErr == ""&& $nameErr == "" 
     && $shippingStreetErr == "" && $shippingCityErr == "" && $shippingStateErr == ""
     && $shippingZipErr == "" && $billingStreetErr == "" && $billingCityErr == "" && $billingStateErr == "" 
     && $billingZipErr == "") {
 
+	//filling out basic customer information
       $sql = "INSERT INTO CustomerAccount(CompanyName, QuoteType, Comments) VALUES 
       ('$companyName', '$quote', '$comment') ON DUPLICATE KEY UPDATE QuoteType = '$quote'";
-
       $conn->exec($sql);
 
+      	//grabbing customer account number
       $myAccount = $conn->query("SELECT CustomerAccount.AccountNumber 
       FROM CustomerAccount WHERE CompanyName='".$companyName."'");
-
       $myAccount->execute();
+      	//storing customer account number in val at index 0
       $val = $myAccount->fetch(PDO::FETCH_BOTH);
 
+      	//filling out shipping address using val as foreign key field
       $sql = "INSERT INTO ShippingAddress(AccountNumber, Street, City, State, Zip)
       VALUES ('$val[0]', '$shippingStreet', '$shippingCity', '$shippingState', '$shippingZip')";
-
       $conn->exec($sql);
 
+      	//filling out billing address using val as foreign key field
       $sql = "INSERT INTO BillingAddress(AccountNumber, Street, City, State, Zip)
       VALUES ('$val[0]', '$billingStreet', '$billingCity', '$billingState', '$billingZip')";
-
       $conn->exec($sql);
 
+      	//filling out Rep information using val as foreign key field
       $sql = "INSERT INTO Rep(FirstName, LastName, Email, Password, Phone, AccountNumber)
       VALUES ('$firstName', '$lastName', '$email', '$password', '$phone', '$val[0]')";
-      
       $conn->exec($sql);
+/*********************** END OF SQL INSERTION CODE *********************/
 
       $feedback = "Data succesfully added.";
       $error = "";
