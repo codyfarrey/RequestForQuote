@@ -9,89 +9,57 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
       <link rel="stylesheet" href="./index.css" />
       <title>Request for Quote</title>
-      <?php require 'auth.php'; ?>
+      <?php
+        require 'auth.php';
+
+        $conn = new mysqli($servername, $username, $password, $username);
+
+        if ($conn->connect_error) {
+          die("Connection failed: " . $conn->connect_error);
+        }
+      ?>
     </head>
     <body>
       <?php 
         $repEmail = $repPassword = $repEmailErr = $repPasswordErr = "";
+        $feedback = $error = $accountNumber = "";
 
-        $partName = $repPassword = $listingPrice = $partQuantity = $partDescription = $comment = "";
-        $partNameErr = $repPasswordErr = $listingPriceErr = $partQuantityErr = "";
+        $partId = $partIdErr = $quantity = $quantityErr = $date = $dateErr = "";
 
-        $feedback = $error = "";
-      
-        try 
-        {
-            $conn = new PDO("mysql:host=$servername;dbname=$username", $username, $password);
-            // set the PDO error mode to exception
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        }
-        catch(PDOException $e)
-        {
-          $error = "Connection failed: " . $e->getMessage();
-        }
-
-        if (isset($_POST["cancel"])) {
-          $partName = $manufacturerName = $listingPrice = $partQuantity = $partDescription = $comment = "";
-          $partNameErr = $manufacturerNameErr = $listingPriceErr = $partQuantityErr = "";
-
-          echo "CANCEL CLICKED";
-        }
+        $parts = [];
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
           /*************** Form Validation and Populating Variables **************/
-          if (empty($_POST["partName"])) {
-            $partNameErr = "Part name is required.";
+          if (empty($_POST["repEmail"])) {
+            $repEmailErr = "Email is required.";
           } else {
-            $partName = test_input($_POST["partName"]);
+            $repEmail = test_input($_POST["repEmail"]);
 	        }
 
-          if (empty($_POST["manufacturerName"])) {
-            $manufacturerNameErr = "Manufacturer name is required.";
+          if (empty($_POST["repPassword"])) {
+            $repPasswordErr = "Password is required.";
           } else {
-            $manufacturerName = test_input($_POST["manufacturerName"]);
+            $repPassword = test_input($_POST["repPassword"]);
           }
 
-          if (empty($_POST["listingPrice"])) {
-            $listingPriceErr = "Listing price is required.";
-          } else {
-            $listingPrice = test_input($_POST["listingPrice"]);
-          }
-
-          if (empty($_POST["partQuantity"])) {
-            $partQuantityErr = "Part quantity is required.";
-          } else {
-            $partQuantity = test_input($_POST["partQuantity"]);
-          }
-
-          if (empty($_POST["partDescription"])) {
-            $partDescription = "";
-          } else {
-            $partDescription = test_input($_POST["partDescription"]);
-          }
-
-          if (empty($_POST["comment"])) {
-            $comment = "";
-          } else {
-            $comment = test_input($_POST["comment"]);
-          }
-	
+          
           /*************** SQL CODE **************/
-          if($partNameErr == "" && $manufacturerNameErr == "" && $listingPriceErr == "" && $partQuantityErr == "") {
-            $sql ="INSERT INTO Inventory(Name, Price, Quantity, Description, Manufacturer, Comments)
-            VALUES ('$partName', '$listingPrice', '$partQuantity', '$partDescription', '$manufacturerName', '$comment')";
+          if(empty($repEmailErr) && empty($repPasswordErr)) {
+            $sql = "SELECT AccountNumber, Email, Password FROM Rep WHERE Email LIKE ('$repEmail')";
+            $result = $conn->query($sql);
 
-            $conn->exec($sql);
-            $feedback = "New record created successfully.";
-            $error = "";
-            $partName = $manufacturerName = $listingPrice = $partQuantity = $partDescription = $comment = "";
-            $partNameErr = $manufacturerNameErr = $listingPriceErr = $partQuantityErr = "";
-
-            $conn = null;
+            if ($result->num_rows > 0) {
+              while ($row = $result->fetch_assoc()) {
+                if ($repEmail == $row["Email"] && $repPassword == $row["Password"]) {
+                  $accountNumber = $row["AccountNumber"];
+                } else {
+                  echo "Invalid Password.";
+                }
+              }
             } else {
-              $error = "* Please fill out all required fields.";
-              $feedback = "";
+              echo "Invalid Email";
             }
+          }
         }
 
         function test_input($data) {
@@ -141,6 +109,7 @@
             </div>
           </div>
 
+          <?php if (empty($accountNumber)): ?>
           <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
             <div class="box">
               <h4 class="center">Customer</h4>
@@ -172,33 +141,63 @@
                 </div>
               </div>
             </div>
-
+          </form>
+          <?php else: ?>
+          <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
             <div class="box">
-              <h4 class="center">Comments</h4>
-
+              <h4 class="center">RFQ</h4>
               <div class="box">
-                  <div class="form-group">
-                    <textarea name="comment" class="form-control" value="<?php echo $comment;?>"  rows="3"></textarea>
-                  </div>
-              </div>
+                <div class="form-group">
 
-            </div>
+                  <label for="partId">Part</label>
+                  <?php
+                    $sql = "SELECT PartID, Name FROM Inventory";
+                    $result = $conn->query($sql);
 
-            <div class="box center">
-              <span class="feedback"><?php echo $feedback;?></span>
-              <span class="error"><?php echo $error; ?></span>
-              <div class="row">
-                <div class="col-6 center">
-                  <button type="reset" name="cancel" class="btn btn-secondary btn-lg">Cancel</button>
+                    echo '<select class="form-control" name="partId">';
+                    
+                    if ($result->num_rows > 0) {
+                      while ($row = $result->fetch_assoc()) {
+                        echo '<option value="' .$row['PartID'].'">'.$row['Name'].'</option>';
+                      }
+                    }
+
+                    echo '</select>';
+        
+                    $conn = null;
+                  ?>
+                  <span class="error"><?php echo $partIdErr;?></span>
                 </div>
 
-                <div class="col-6 center">
-                  <button type="submit" class="btn btn-primary btn-lg">Create</button>
+                <div class="form-group">
+                  <label for="quantity">Quantity</label>
+                  <input type="number" class="form-control" id="quantity" name="quantity" value="<?php echo $quantity;?>">
+                  <span class="error"><?php echo $quantityErr;?></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="date">Date Required</label>
+                  <input type="date" class="form-control" id="date" name="date" value="<?php echo $date;?>" min="<?php echo date("d/m/Y") ?>">
+                  <span class="error"><?php echo $dateErr;?></span>
+                </div>
+              </div>
+
+              <div class="box center">
+                <span class="feedback"><?php echo $feedback;?></span>
+                <span class="error"><?php echo $error; ?></span>
+                <div class="row">
+                  <div class="col-6 center">
+                    <button type="reset" name="cancel" class="btn btn-secondary btn-lg">Cancel</button>
+                  </div>
+
+                  <div class="col-6 center">
+                    <button type="submit" class="btn btn-primary btn-lg">Create</button>
+                  </div>
                 </div>
               </div>
             </div>
           </form>
-
+          <?php endif; ?>
         </div>
 	    </main>
 

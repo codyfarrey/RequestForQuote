@@ -66,7 +66,7 @@ CREATE TABLE Inventory(
 	Price DECIMAL NOT NULL, 
 	Quantity INTEGER NOT NULL, 
 	Description VARCHAR(150), 
-	Manufacturor VARCHAR(20) NOT NULL, 
+	Manufacturer VARCHAR(20) NOT NULL, 
 	Comments VARCHAR(150), 
 	PRIMARY KEY(PartID)
 );
