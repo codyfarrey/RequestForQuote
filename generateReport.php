@@ -20,55 +20,56 @@
       ?>
     </head>
     <body>
-      <?php 
-
-        $report = $startDate = $endDate = $startDateErr = $endDateErr = "";
-        $error = $feedback = "";
+	<?php 
+	$start = "SELECT ";
+        $fields = array("RFQ.RFQID,", "CustomerAccount.AccountNumber,", "Inventory.PartID,", "RFQDetail.DateRequired,", "Inventory.Price");
+	$all = "RFQ.RFQID, CustomerAccount.AccountNumber, Inventory.PartID, RFQDetail.DateRequired, Inventory.Price";
+	$ending = " FROM RFQ, CustomerAccount, Inventory, RFQDetail";
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-          /*************** Form Validation and Populating Variables **************/
-            if (empty($_POST["partId"])) {
-              $partIdErr = "Part Id is required.";
-            } else {
-              $partId = test_input($_POST["partId"]);
-            }
+		/*************** Form Validation and Populating Variables **************/
+	$content= array($_POST['content']);
 
-            if (empty($_POST["quantity"])) {
-              $quantityErr = "Quantity is required.";
-            } else {
-              $quantity = test_input($_POST["quantity"]);
-            }
+	session_start();
+		if (!empty($content[0])) 
+		{
+              		$result = $conn->query($start . $all . $ending);
+			if ($result->num_rows > 0) 
+			{
+				//output data of each row
+				while($row = $result->fetch_assoc()) 
+				{
+					$_SESSION['rid']= $row["RFQID"];
+					$_SESSION['cid']= $row["AccountNumber"];
+					$_SESSION['pid']= $row["PartID"];
+					$_SESSION['date']= $row["DateRequired"];
+					$_SESSION['price']= $row["Price"];
+				}
+			} 
+			else 
+			{
+				echo $start . $all . $ending;
+				echo "0 results";
+			}
+			/*
+              		$sql = "INSERT INTO RFQDetail(RFQID, PartID, Quantity, DateRequired) VALUES
+              		($rfqId, '$partId', '$quantity', '$date')";
 
-            if (empty($_POST["date"])) {
-              $dateErr = "Date is required.";
-            } else {
-              $date = test_input($_POST["date"]);
-            }
+              		if (mysqli_query($conn, $sql)) {
+                		$feedback = "Submitted Request For Quote Succesfully.";
+                		$error = "";
+              		} else {
+                		$error = "Error: " . $sql . "" . mysqli_error($conn);
+                		$feedback = "";
+			}*/
 
-            if (!empty($accountNumber) && empty($partIdErr) && empty($quantityErr) && empty($dateErr)) {
-              $sql ="INSERT INTO RFQ(AccountNumber)
-              VALUES ('$accountNumber')";
-
-              mysqli_query($conn, $sql);
-
-              $rfqId = mysqli_insert_id($conn);
-
-              $sql = "INSERT INTO RFQDetail(RFQID, PartID, Quantity, DateRequired) VALUES
-              ($rfqId, '$partId', '$quantity', '$date')";
-
-              if (mysqli_query($conn, $sql)) {
-                $feedback = "Submitted Request For Quote Succesfully.";
-                $error = "";
-              } else {
-                $error = "Error: " . $sql . "" . mysqli_error($conn);
-                $feedback = "";
-              }
-
-              
-            } else {
-              $error = "Please fill in data properly.";
-              $feedback = "";
-            }
+              		
+		} /*
+		else 
+		{
+              		$error = "Please fill in data properly.";
+              		$feedback = "";
+		}*/
         }
 
           
@@ -142,7 +143,7 @@
                 <div class="form-group">
                     <label for="startDate">Start Date</label>
                     <input type="date" class="form-control" id="startDate" name="startDate" value="<?php echo $startDate;?>" min="<?php echo date("d/m/Y") ?>">
-                    <span class="error"><?php echo $startDateErr;?></span>
+                   <span class="error"><?php //echo //$startDateErr;?></span>
                 </div>
               </div>
 
@@ -150,7 +151,7 @@
                 <div class="form-group">
                     <label for="endDate">End Date</label>
                     <input type="date" class="form-control" id="endDate" name="endDate" value="<?php echo $endDate;?>" min="<?php echo date("d/m/Y") ?>">
-                    <span class="error"><?php echo $endDateErr;?></span>
+                   <span class="error"><?php //echo //$endDateErr;?></span>
                 </div>
               </div>
             </div>
@@ -160,7 +161,7 @@
             <h4 class="center">Content</h4>
             <div class="row">
               <div class="col">
-                <input type="checkbox" class="form-check" name="contet[]" <?php if (isset($report) && $report =="all") echo "checked";?> value="all" id="all" autocomplete="off"> 
+                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="all") echo "checked";?> value="all" id="all" autocomplete="off"> 
                 <label for="all" class="form-check-label">Select All</label>
                 <br />
                 <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="rfqId") echo "checked";?> value="rfqId" id="rfqId" autocomplete="off"> 
@@ -173,7 +174,7 @@
                 <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="partId") echo "checked";?> value="partId" id="partId" autocomplete="off"> 
                 <label for="partId" class="form-check-label">Part</label>
                 <br />
-                <input type="checkbox" class="form-check" name="centent[]" <?php if (isset($report) && $report =="partName") echo "checked";?> value="partName" id="partName" autocomplete="off"> 
+                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="partName") echo "checked";?> value="partName" id="partName" autocomplete="off"> 
                 <label for="partName" class="form-check-label">Part Quantity</label>
                 <br />
                 <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="partPrice") echo "checked";?> value="partPrice" id="partPrice" autocomplete="off"> 
@@ -183,7 +184,7 @@
           </div>
           <div class="box center">
                 <span class="feedback"><?php echo $feedback;?></span>
-                <span class="error"><?php echo $error; ?></span>
+                <span class="error"><?//php echo //$error; ?></span>
                 <div class="row">
                   <div class="col-6 center">
                     <button type="reset" name="cancel" class="btn btn-secondary btn-lg">Cancel</button>
