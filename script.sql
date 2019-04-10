@@ -1,7 +1,15 @@
+DROP TABLE ShippingAddress;
+DROP TABLE BillingAddress;
+DROP TABLE Rep;
+DROP TABLE Inventory;
+DROP TABLE Manager;
+DROP TABLE CustomerAccount;
+
 CREATE TABLE CustomerAccount( 
 	AccountNumber INTEGER AUTO_INCREMENT NOT NULL, 
 	CompanyName VARCHAR(99) NOT NULL, 
 	QuoteType VARCHAR(20) NOT NULL, 
+	Comments TEXT,
 	UNIQUE(CompanyName),
 	PRIMARY KEY(AccountNumber)
 );
@@ -15,8 +23,6 @@ CREATE TABLE ShippingAddress(
 	Zip INTEGER NOT NULL,
 	PRIMARY KEY(ShippingID),
 	FOREIGN KEY(AccountNumber) REFERENCES CustomerAccount(AccountNumber)
-	ON DELETE CASCADE
-	ON UPDATE CASCADE
 );
 
 CREATE TABLE BillingAddress( 
@@ -28,28 +34,26 @@ CREATE TABLE BillingAddress(
 	Zip INTEGER NOT NULL,
 	PRIMARY KEY(BillingID),
 	FOREIGN KEY(AccountNumber) REFERENCES CustomerAccount(AccountNumber)
-	ON DELETE CASCADE
-	ON UPDATE CASCADE
 );
 
 CREATE TABLE Rep( 
 	RepID INTEGER NOT NULL AUTO_INCREMENT, 
 	FirstName VARCHAR(20) NOT NULL, 
 	LastName VARCHAR(20) NOT NULL, 
-	Email VARCHAR(30) NOT NULL,  
+	Email VARCHAR(30) NOT NULL,
+	Password VARCHAR(30) NOT NULL, 
 	Phone VARCHAR(14) NOT NULL, 
 	AccountNumber INTEGER NOT NULL, 
 	PRIMARY KEY(RepID), 
 	FOREIGN KEY(AccountNumber) REFERENCES CustomerAccount(AccountNumber)
-	ON DELETE CASCADE
-	ON UPDATE CASCADE
 );
 
  CREATE TABLE Manager( 
 	 ManagerID INTEGER NOT NULL AUTO_INCREMENT, 
 	 FirstName VARCHAR(20) NOT NULL, 
 	 LastName VARCHAR(20) NOT NULL,  
-	 Email VARCHAR(30) NOT NULL, 
+	 Email VARCHAR(30) NOT NULL,
+	 Password VARCHAR(30) NOT NULL,
 	 Phone VARCHAR(14) NOT NULL, 
 	 PRIMARY KEY(ManagerID)
  );
