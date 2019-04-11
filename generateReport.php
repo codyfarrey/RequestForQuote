@@ -18,6 +18,33 @@
           die("Connection failed: " . $conn->connect_error);
         }
       ?>
+      <script type="text/javascript">
+        function selectAll() {
+            var items = document.getElementsByName('content[]');
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].type == 'checkbox')
+                    items[i].checked = true;
+            }
+        }
+
+        function UnSelectAll() {
+            var items = document.getElementsByName('content');
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].type == 'checkbox')
+                    items[i].checked = false;
+            }
+        }
+
+        function deselectSelectAll() {
+            var items = document.getElementsByName('content[]');
+
+            for (var i = 0; i < items.length; i++) {
+              if (items[i].value == "all") {
+                items[i].checked = false;
+              }
+            }
+        }		
+    </script>
     </head>
     <body>
       <?php 
@@ -27,22 +54,32 @@
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
           /*************** Form Validation and Populating Variables **************/
-            if (empty($_POST["partId"])) {
-              $partIdErr = "Part Id is required.";
+              $report = test_input($_POST["report"]);
+
+              echo $report;
+
+            if (empty($_POST["startDate"])) {
+              $startDateErr = "Start date is required.";
             } else {
-              $partId = test_input($_POST["partId"]);
+              $startDate = test_input($_POST["startDate"]);
+
+              echo $startDate;
             }
 
-            if (empty($_POST["quantity"])) {
-              $quantityErr = "Quantity is required.";
+            if (empty($_POST["endDate"])) {
+              $endDateErr = "End date is required.";
             } else {
-              $quantity = test_input($_POST["quantity"]);
+              $endDate = test_input($_POST["endDate"]);
+
+              echo $endDate;
             }
 
-            if (empty($_POST["date"])) {
-              $dateErr = "Date is required.";
+            if (empty($_POST["content"])) {
+              $contentErr = "Please select your content options";
             } else {
-              $date = test_input($_POST["date"]);
+              $content = implode(",",$_POST["content"]);
+
+              echo $content;
             }
 
             if (!empty($accountNumber) && empty($partIdErr) && empty($quantityErr) && empty($dateErr)) {
@@ -160,23 +197,23 @@
             <h4 class="center">Content</h4>
             <div class="row">
               <div class="col">
-                <input type="checkbox" class="form-check" name="contet[]" <?php if (isset($report) && $report =="all") echo "checked";?> value="all" id="all" autocomplete="off"> 
+                <input type="checkbox" class="form-check" onclick="selectAll()" name="content[]" <?php if (isset($report) && $report =="all") echo "checked";?> value="all" id="all" autocomplete="off"> 
                 <label for="all" class="form-check-label">Select All</label>
                 <br />
-                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="rfqId") echo "checked";?> value="rfqId" id="rfqId" autocomplete="off"> 
+                <input type="checkbox" class="form-check" onclick="deselectSelectAll()" name="content[]" <?php if (isset($report) && $report =="rfqId" || isset($report) && $report =="all") echo "checked";?> value="rfqId" id="rfqId" autocomplete="off"> 
                 <label for="rfqId" class="form-check-label">Request For Quote</label>
                 <br />
-                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="customerId") echo "checked";?> value="customerId" id="customerId" autocomplete="off"> 
+                <input type="checkbox" class="form-check" onclick="deselectSelectAll()" name="content[]" <?php if (isset($report) && $report =="customerId") echo "checked";?> value="customerId" id="customerId" autocomplete="off"> 
                 <label for="customerId" class="form-check-label">Customer Account</label>
               </div>
               <div class="col">
-                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="partId") echo "checked";?> value="partId" id="partId" autocomplete="off"> 
+                <input type="checkbox" class="form-check" onclick="deselectSelectAll()" name="content[]" <?php if (isset($report) && $report =="partId") echo "checked";?> value="partId" id="partId" autocomplete="off"> 
                 <label for="partId" class="form-check-label">Part</label>
                 <br />
-                <input type="checkbox" class="form-check" name="centent[]" <?php if (isset($report) && $report =="partName") echo "checked";?> value="partName" id="partName" autocomplete="off"> 
+                <input type="checkbox" class="form-check" onclick="deselectSelectAll()" name="content[]" <?php if (isset($report) && $report =="partName") echo "checked";?> value="partName" id="partName" autocomplete="off"> 
                 <label for="partName" class="form-check-label">Part Quantity</label>
                 <br />
-                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="partPrice") echo "checked";?> value="partPrice" id="partPrice" autocomplete="off"> 
+                <input type="checkbox" class="form-check" onclick="deselectSelectAll()" name="content[]" <?php if (isset($report) && $report =="partPrice") echo "checked";?> value="partPrice" id="partPrice" autocomplete="off"> 
                 <label for="partPrice" class="form-check-label">Part Price</label>
               </div>
             </div>
@@ -190,7 +227,7 @@
                   </div>
 
                   <div class="col-6 center">
-                    <button type="submit" form="rfqForm" class="btn btn-primary btn-lg">Generate</button>
+                    <button type="submit" class="btn btn-primary btn-lg">Generate</button>
                   </div>
                 </div>
             </div>
