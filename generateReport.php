@@ -21,17 +21,18 @@
     </head>
     <body>
 	<?php 
-	$start = "SELECT ";
+	$start = "SELECT DISTINCT";
         $fields = array("RFQ.RFQID,", "CustomerAccount.AccountNumber,", "Inventory.PartID,", "RFQDetail.DateRequired,", "Inventory.Price");
 	$all = "RFQ.RFQID, CustomerAccount.AccountNumber, Inventory.PartID, RFQDetail.DateRequired, Inventory.Price";
 	$ending = " FROM RFQ, CustomerAccount, Inventory, RFQDetail";
 
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-		/*************** Form Validation and Populating Variables **************/
-	$content= array($_POST['content']);
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
+	/*************** Form Validation and Populating Variables **************/
+	$content= array($_POST['content']);
 	session_start();
-		if (!empty($content[0])) 
+		//checking if "ALL" was selected
+		if ($content[0] != "") 
 		{
               		$result = $conn->query($start . $all . $ending);
 			if ($result->num_rows > 0) 
@@ -46,30 +47,56 @@
 					$_SESSION['price']= $row["Price"];
 				}
 			} 
+			//if nothing was returned
 			else 
 			{
-				echo $start . $all . $ending;
-				echo "0 results";
-			}
-			/*
-              		$sql = "INSERT INTO RFQDetail(RFQID, PartID, Quantity, DateRequired) VALUES
-              		($rfqId, '$partId', '$quantity', '$date')";
-
-              		if (mysqli_query($conn, $sql)) {
-                		$feedback = "Submitted Request For Quote Succesfully.";
-                		$error = "";
-              		} else {
-                		$error = "Error: " . $sql . "" . mysqli_error($conn);
-                		$feedback = "";
-			}*/
-
-              		
-		} /*
-		else 
+				echo "0 results for ALL";
+			}              		
+		} 
+		//if "ALL" was not selected
+		else
 		{
-              		$error = "Please fill in data properly.";
-              		$feedback = "";
-		}*/
+			//setting up variables
+			$sql = "";
+			$count = 0;
+
+			//running for loop to build select statement
+			for($x = 1; $x < count($content); $x++)
+			{
+				//checking which box was selected
+				if($content[$x] != "")
+				{
+					//if more than 1 box was selected add commas in appropriate areas
+					if($count >= 1)
+					{
+						$sql = $sql . ", ";
+					}
+					//build select statement
+					$sql = $sql . $content[$x];
+					$count++;
+
+				}
+			}
+			//building final string to push to 
+              		$result = $conn->query($start . $sql . $ending);
+			if ($result->num_rows > 0) 
+			{
+				//output data of each row
+				while($row = $result->fetch_assoc()) 
+				{
+					$_SESSION['rid']= $row["RFQID"];
+					$_SESSION['cid']= $row["AccountNumber"];
+					$_SESSION['pid']= $row["PartID"];
+					$_SESSION['date']= $row["DateRequired"];
+					$_SESSION['price']= $row["Price"];
+				}
+			} 
+			else 
+			{
+				echo "0 results for more options";
+			}
+	
+		}
         }
 
           
