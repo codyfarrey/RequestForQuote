@@ -169,7 +169,7 @@
                 <div class="form-group">
                     <label for="startDate">Start Date</label>
                     <input type="date" class="form-control" id="startDate" name="startDate" value="<?php echo $startDate;?>" min="<?php echo date("d/m/Y") ?>">
-                    <span class="error"><?php echo $startDateErr;?></span>
+                   <span class="error"><?php //echo //$startDateErr;?></span>
                 </div>
               </div>
 
@@ -177,7 +177,7 @@
                 <div class="form-group">
                     <label for="endDate">End Date</label>
                     <input type="date" class="form-control" id="endDate" name="endDate" value="<?php echo $endDate;?>" min="<?php echo date("d/m/Y") ?>">
-                    <span class="error"><?php echo $endDateErr;?></span>
+                   <span class="error"><?php //echo //$endDateErr;?></span>
                 </div>
               </div>
             </div>
@@ -211,7 +211,7 @@
           </div>
           <div class="box center">
                 <span class="feedback"><?php echo $feedback;?></span>
-                <span class="error"><?php echo $error; ?></span>
+                <span class="error"><?//php echo //$error; ?></span>
                 <div class="row">
                   <div class="col-6 center">
                     <button type="reset" name="cancel" class="btn btn-secondary btn-lg">Cancel</button>
