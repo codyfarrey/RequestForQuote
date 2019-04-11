@@ -21,8 +21,8 @@
     </head>
     <body>
 	<?php 
-	$start = "SELECT DISTINCT";
-        $fields = array("RFQ.RFQID,", "CustomerAccount.AccountNumber,", "Inventory.PartID,", "RFQDetail.DateRequired,", "Inventory.Price");
+	$start = "SELECT DISTINCT ";
+        $fields = array("RFQ.RFQID", "CustomerAccount.AccountNumber", "Inventory.PartID", "RFQDetail.DateRequired", "Inventory.Price");
 	$all = "RFQ.RFQID, CustomerAccount.AccountNumber, Inventory.PartID, RFQDetail.DateRequired, Inventory.Price";
 	$ending = " FROM RFQ, CustomerAccount, Inventory, RFQDetail";
 
@@ -31,8 +31,8 @@
 	/*************** Form Validation and Populating Variables **************/
 	$content= array($_POST['content']);
 	session_start();
-		//checking if "ALL" was selected
-		if ($content[0] != "") 
+	//checking if "ALL" was selected
+		if (in_array('all', $_POST['content'])) 
 		{
               		$result = $conn->query($start . $all . $ending);
 			if ($result->num_rows > 0) 
@@ -41,6 +41,7 @@
 				while($row = $result->fetch_assoc()) 
 				{
 					$_SESSION['rid']= $row["RFQID"];
+					echo $row["RFQID"];
 					$_SESSION['cid']= $row["AccountNumber"];
 					$_SESSION['pid']= $row["PartID"];
 					$_SESSION['date']= $row["DateRequired"];
@@ -56,15 +57,16 @@
 		//if "ALL" was not selected
 		else
 		{
+			/************ CODE YOU NEED TO MAKE SQL STATEMENTS **************/
 			//setting up variables
 			$sql = "";
 			$count = 0;
 
 			//running for loop to build select statement
-			for($x = 1; $x < count($content); $x++)
+			for($x = 0; $x < count($_POST['content']); $x++)
 			{
 				//checking which box was selected
-				if($content[$x] != "")
+				if($_POST['content'][$x] != "")
 				{
 					//if more than 1 box was selected add commas in appropriate areas
 					if($count >= 1)
@@ -72,28 +74,36 @@
 						$sql = $sql . ", ";
 					}
 					//build select statement
-					$sql = $sql . $content[$x];
+					$sql = $sql . $fields[$x];
 					$count++;
 
 				}
 			}
-			//building final string to push to 
-              		$result = $conn->query($start . $sql . $ending);
-			if ($result->num_rows > 0) 
+			//Getting Query 
+			echo $sql;
+			if($sql != "")
 			{
-				//output data of each row
-				while($row = $result->fetch_assoc()) 
+				$result = $conn->query($start . $sql . $ending);
+			}
+			/******************* END OF CODE SEGMENT ********************/
+			else
+			{
+				if ($result->num_rows > 0) 
 				{
-					$_SESSION['rid']= $row["RFQID"];
-					$_SESSION['cid']= $row["AccountNumber"];
-					$_SESSION['pid']= $row["PartID"];
-					$_SESSION['date']= $row["DateRequired"];
-					$_SESSION['price']= $row["Price"];
+					//output data of each row
+					while($row = $result->fetch_assoc()) 
+					{
+						$_SESSION['rid']= $row["RFQID"];
+						$_SESSION['cid']= $row["AccountNumber"];
+						$_SESSION['pid']= $row["PartID"];
+						$_SESSION['date']= $row["DateRequired"];
+						$_SESSION['price']= $row["Price"];
+					}
+				} 
+				else 
+				{
+					echo "0 results for more options";
 				}
-			} 
-			else 
-			{
-				echo "0 results for more options";
 			}
 	
 		}
