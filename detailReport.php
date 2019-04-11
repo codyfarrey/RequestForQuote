@@ -17,20 +17,20 @@
         }
         //Getting all of our data from the Create Report Screen and saving to local variables
         session_start();
-        $report = $_SESSION["report"];
-        $startDate = $_SESSION["startDate"];
-        $endDate = $_SESSION["endDate"];
-        $content = $_SESSION["content"];
+        //$report = $_SESSION["report"];
+       // $startDate = $_SESSION["startDate"];
+        //$endDate = $_SESSION["endDate"];
+       // $content = $_SESSION["content"];
       ?>
     </head>
     <body>
       <?php
         //Printing all of the data from Create Report Screen to show that I have it
         //Remove this on submission
-        echo $report;
-        echo $startDate;
-        echo $endDate;
-        echo $content;
+        ///echo $report;
+        //echo $startDate;
+        //echo $endDate;
+        //echo $content;
       ?>
       <noscript>You need to enable Javascript to run this app.</noscript>
 
@@ -74,8 +74,10 @@
           <?php
             $sql = "SELECT DISTINCT RFQ.RFQID, CustomerAccount.AccountNumber, 
             Inventory.PartID, RFQDetail.DateRequired, Inventory.Price 
-            FROM RFQ, CustomerAccount, Inventory, RFQDetail";
-            $result = $conn->query($sql);
+	    FROM RFQ, CustomerAccount, Inventory, RFQDetail";
+	    $result = $conn->query($sql);
+
+
             echo '<thead>';
             
 	                //Create table with PHP HERE
@@ -87,50 +89,35 @@
           <form id="rfqForm" method="POST">
           <div class="box center">
             <h4>Report</h4>
-            <div class="box">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>RFQ Id</th>
-                  <th>Customer Account</th>
-                  <th>Part</th>
-                  <th>Quantity</th>
-                  <th>Date Required</th>
-                  <th>Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>0001</td>
-                  <td>Palace Campground</td>
-                  <td>Airplane Wing</td>
-                  <td>10</td>
-                  <td>08/03/1029</td>
-                  <td>$2582.99</td>
-                </tr>
-                <tr>
-                  <td>0001</td>
-                  <td>Palace Campground</td>
-                  <td>Airplane Wing</td>
-                  <td>10</td>
-                  <td>08/03/1029</td>
-                  <td>$2582.99</td>
-                </tr>
-                <tr>
-                  <td>0001</td>
-                  <td>Palace Campground</td>
-                  <td>Airplane Wing</td>
-                  <td>10</td>
-                  <td>08/03/1029</td>
-                  <td>$2582.99</td>
-                </tr>
-              </tbody>
-            </table>
-            </div>
+            	<div class="box">
+	  <table class="striped">
+            <tr class="header">
+                <td>Request Id</td>
+                <td>Account Number</td>
+		<td>Part Id</td>
+		<td>Date Required</td>
+		<td>Price</td>
+            </tr>
+	<?php
+	    while ($row = $result->fetch_assoc()) 
+	    {
+		echo "<tr>";
+		echo "<td>".$row["RFQID"]."</td>";
+		echo "<td>".$row["AccountNumber"]."</td>";
+		echo "<td>".$row["PartID"]."</td>";
+		echo "<td>".$row["DateRequired"]."</td>";
+		echo "<td>".$row["Price"]."</td>";
+		echo "</tr>";
+	    }
+	?>
+        </table> 
+
+		
+		</div>
           </div>
           <div class="box center">
-              <span class="feedback"><?php echo $feedback;?></span>
-              <span class="error"><?php echo $error; ?></span>
+              <span class="feedback"><?php //echo $feedback;?></span>
+              <span class="error"><?php //echo $error; ?></span>
               <div class="row">
                 <div class="col-6 center">
                   <button type="reset" name="cancel" class="btn btn-secondary btn-lg">Cancel</button>
