@@ -17,69 +17,24 @@
         if ($conn->connect_error) {
           die("Connection failed: " . $conn->connect_error);
         }
+
+        // Getting all of our data from the Create Report Screen and saving to local variables
+        session_start();
+        $report = $_SESSION["report"];
+        $startDate = $_SESSION["startDate"];
+        $endDate = $_SESSION["endDate"];
+        $content = $_SESSION["content"];
       ?>
     </head>
     <body>
-      <?php 
+      <?php
 
-        $report = $startDate = $endDate = $startDateErr = $endDateErr = "";
-        $error = $feedback = "";
-
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-          /*************** Form Validation and Populating Variables **************/
-            if (empty($_POST["partId"])) {
-              $partIdErr = "Part Id is required.";
-            } else {
-              $partId = test_input($_POST["partId"]);
-            }
-
-            if (empty($_POST["quantity"])) {
-              $quantityErr = "Quantity is required.";
-            } else {
-              $quantity = test_input($_POST["quantity"]);
-            }
-
-            if (empty($_POST["date"])) {
-              $dateErr = "Date is required.";
-            } else {
-              $date = test_input($_POST["date"]);
-            }
-
-            if (!empty($accountNumber) && empty($partIdErr) && empty($quantityErr) && empty($dateErr)) {
-              $sql ="INSERT INTO RFQ(AccountNumber)
-              VALUES ('$accountNumber')";
-
-              mysqli_query($conn, $sql);
-
-              $rfqId = mysqli_insert_id($conn);
-
-              $sql = "INSERT INTO RFQDetail(RFQID, PartID, Quantity, DateRequired) VALUES
-              ($rfqId, '$partId', '$quantity', '$date')";
-
-              if (mysqli_query($conn, $sql)) {
-                $feedback = "Submitted Request For Quote Succesfully.";
-                $error = "";
-              } else {
-                $error = "Error: " . $sql . "" . mysqli_error($conn);
-                $feedback = "";
-              }
-
-              
-            } else {
-              $error = "Please fill in data properly.";
-              $feedback = "";
-            }
-        }
-
-          
-
-        function test_input($data) {
-          $data = trim($data);
-          $data = stripslashes($data);
-          $data = htmlspecialchars($data);
-          $data = str_replace("'", '', $data);
-          return $data;
-        }
+        // Printing all of the data from Create Report Screen to show that I have it
+        // Remove this on submission
+        echo $report;
+        echo $startDate;
+        echo $endDate;
+        echo $content;
 
       ?>
       <noscript>You need to enable Javascript to run this app.</noscript>
@@ -119,6 +74,25 @@
               <h2 class="center">RFQ Detail Report</h2>
             </div>
           </div>
+
+          <table class="table">
+          <?php
+            $sql = "SELECT DISTINCT RFQ.RFQID, CustomerAccount.AccountNumber, 
+            Inventory.PartID, RFQDetail.DateRequired, Inventory.Price 
+            FROM RFQ, CustomerAccount, Inventory, RFQDetail";
+
+
+            $result = $conn->query($sql);
+
+            echo '<thead>';
+            
+            // Create table with PHP HERE
+
+            echo '</thead>';
+
+            $conn = null;
+          ?>
+          </table>
 
           <form id="rfqForm" method="POST">
           <div class="box center">

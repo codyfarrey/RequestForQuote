@@ -19,6 +19,7 @@
         }
       ?>
       <script type="text/javascript">
+        // This function loops through and checks all boxes in content when called.
         function selectAll() {
             var items = document.getElementsByName('content[]');
             for (var i = 0; i < items.length; i++) {
@@ -26,15 +27,8 @@
                     items[i].checked = true;
             }
         }
-
-        function UnSelectAll() {
-            var items = document.getElementsByName('content');
-            for (var i = 0; i < items.length; i++) {
-                if (items[i].type == 'checkbox')
-                    items[i].checked = false;
-            }
-        }
-
+        
+        // This function deselects the Select All checkbox
         function deselectSelectAll() {
             var items = document.getElementsByName('content[]');
 
@@ -48,15 +42,16 @@
     </head>
     <body>
       <?php 
-
-        $report = $startDate = $endDate = $startDateErr = $endDateErr = "";
+        // Creating variables to hold form data and error info.
+        $report = $startDate = $endDate = $startDateErr = "";
+        $endDateErr = $content = $contentErr = "";
         $error = $feedback = "";
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-          /*************** Form Validation and Populating Variables **************/
-              $report = test_input($_POST["report"]);
+            // Populating variables with data retrieved from form.
+            $report = test_input($_POST["report"]);
 
-              echo $report;
+            echo $report;
 
             if (empty($_POST["startDate"])) {
               $startDateErr = "Start date is required.";
@@ -77,39 +72,34 @@
             if (empty($_POST["content"])) {
               $contentErr = "Please select your content options";
             } else {
+              // The implode function changes the array of content into a string seperating
+              // each value with commas. You can use the explode function to revert it back
+              // to an array.
               $content = implode(",",$_POST["content"]);
-
-              echo $content;
             }
 
-            if (!empty($accountNumber) && empty($partIdErr) && empty($quantityErr) && empty($dateErr)) {
-              $sql ="INSERT INTO RFQ(AccountNumber)
-              VALUES ('$accountNumber')";
+            // If we have no errors.
+            if (empty($startDateErr) && empty($endDateErr) && empty($contentErr)) {
 
-              mysqli_query($conn, $sql);
+              // Save our form data in session storage for reports page.
+              session_start();
+              $_SESSION['report'] = $report;
+              $_SESSION['startDate'] = $startDate;
+              $_SESSION['endDate'] = $endDate;
+              $_SESSION['content'] = $content;
 
-              $rfqId = mysqli_insert_id($conn);
+              $feedback = "Data saved to session storage!";
+              $error = "";
 
-              $sql = "INSERT INTO RFQDetail(RFQID, PartID, Quantity, DateRequired) VALUES
-              ($rfqId, '$partId', '$quantity', '$date')";
-
-              if (mysqli_query($conn, $sql)) {
-                $feedback = "Submitted Request For Quote Succesfully.";
-                $error = "";
-              } else {
-                $error = "Error: " . $sql . "" . mysqli_error($conn);
-                $feedback = "";
-              }
-
-              
+              // Redirect to report page
+              header("Location: ./detailReport.php");
             } else {
               $error = "Please fill in data properly.";
               $feedback = "";
             }
         }
-
-          
-
+        
+        // Trim bad characters from data
         function test_input($data) {
           $data = trim($data);
           $data = stripslashes($data);
@@ -217,6 +207,7 @@
                 <label for="partPrice" class="form-check-label">Part Price</label>
               </div>
             </div>
+            <span class="error"><?php echo $contentErr;?></span>
           </div>
           <div class="box center">
                 <span class="feedback"><?php echo $feedback;?></span>
