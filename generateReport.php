@@ -22,8 +22,8 @@
     <body>
 	<?php 
 	$start = "SELECT DISTINCT ";
-        $fields = array("RFQ.RFQID", "CustomerAccount.AccountNumber", "Inventory.PartID", "RFQDetail.DateRequired", "Inventory.Price");
-	$all = "RFQ.RFQID, CustomerAccount.AccountNumber, Inventory.PartID, RFQDetail.DateRequired, Inventory.Price";
+        $fields = array("RFQ.RFQID", "CustomerAccount.AccountNumber", "Inventory.Name", "RFQDetail.Quantity", "Inventory.Price");
+	$all = "RFQ.RFQID, CustomerAccount.AccountNumber, Inventory.Name, RFQDetail.Quantity, Inventory.Price";
 	$ending = " FROM RFQ, CustomerAccount, Inventory, RFQDetail";
 
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -37,16 +37,18 @@
               		$result = $conn->query($start . $all . $ending);
 			if ($result->num_rows > 0) 
 			{
-				//output data of each row
-				while($row = $result->fetch_assoc()) 
+				$result = ($start . $all . $ending);
+				$_SESSION['sqlAll'] = $result;
+
+				//previous code for error checking
+				/*while($row = $result->fetch_assoc()) 
 				{
 					$_SESSION['rid']= $row["RFQID"];
-					echo $row["RFQID"];
 					$_SESSION['cid']= $row["AccountNumber"];
-					$_SESSION['pid']= $row["PartID"];
-					$_SESSION['date']= $row["DateRequired"];
+					$_SESSION['pid']= $row["Name"];
+					$_SESSION['date']= $row["Quantity"];
 					$_SESSION['price']= $row["Price"];
-				}
+				}*/
 			} 
 			//if nothing was returned
 			else 
@@ -60,51 +62,67 @@
 			/************ CODE YOU NEED TO MAKE SQL STATEMENTS **************/
 			//setting up variables
 			$sql = "";
-			$count = 0;
-
+			$count = 0;	
+			$i = 0;
 			//running for loop to build select statement
 			for($x = 0; $x < count($_POST['content']); $x++)
 			{
 				//checking which box was selected
-				if($_POST['content'][$x] != "")
+				while($i < count($fields))
 				{
-					//if more than 1 box was selected add commas in appropriate areas
-					if($count >= 1)
+					if($_POST['content'][$x] == $fields[$i])
 					{
-						$sql = $sql . ", ";
+						//if more than 1 box was selected add commas in appropriate areas
+						if($count >= 1)
+						{
+							$sql = $sql . ", ";
+						}
+						//build select statement
+						$sql = $sql . $fields[$i];
+						$count++;
+						break;
 					}
-					//build select statement
-					$sql = $sql . $fields[$x];
-					$count++;
-
+					$i++;
 				}
 			}
 			//Getting Query 
-			echo $sql;
-			if($sql != "")
+			$customSQL=  $start . $sql . $ending;
+			$result = $conn->query($customSQL);		
+			if ($result->num_rows > 0) 
 			{
-				$result = $conn->query($start . $sql . $ending);
-			}
-			/******************* END OF CODE SEGMENT ********************/
-			else
-			{
-				if ($result->num_rows > 0) 
+				//creating session cookie for next page
+				$_SESSION['customSQL'] = $customSQL;
+
+				//previous code for error checking
+				/*while($row = $result->fetch_assoc()) 
 				{
-					//output data of each row
-					while($row = $result->fetch_assoc()) 
+					if (in_array('rfqId', $_POST['content']))
 					{
 						$_SESSION['rid']= $row["RFQID"];
+					}
+					if (in_array('customerId', $_POST['content'])) 
+					{
 						$_SESSION['cid']= $row["AccountNumber"];
-						$_SESSION['pid']= $row["PartID"];
-						$_SESSION['date']= $row["DateRequired"];
+					}
+					if (in_array('partId', $_POST['content'])) 
+					{
+						$_SESSION['pid']= $row["Name"];
+					}
+					if (in_array('partName', $_POST['content'])) 
+					{
+						$_SESSION['quantity']= $row["Quantity"];
+					}
+					if (in_array('partPrice', $_POST['content'])) 
+					{
 						$_SESSION['price']= $row["Price"];
 					}
-				} 
-				else 
-				{
-					echo "0 results for more options";
-				}
+				}*/
+			} 
+			else 
+			{
+				echo "0 results for more options";
 			}
+			
 	
 		}
         }
@@ -201,20 +219,20 @@
                 <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="all") echo "checked";?> value="all" id="all" autocomplete="off"> 
                 <label for="all" class="form-check-label">Select All</label>
                 <br />
-                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="rfqId") echo "checked";?> value="rfqId" id="rfqId" autocomplete="off"> 
+                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="rfqId") echo "checked";?> value="RFQ.RFQID" id="rfqId" autocomplete="off"> 
                 <label for="rfqId" class="form-check-label">Request For Quote</label>
                 <br />
-                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="customerId") echo "checked";?> value="customerId" id="customerId" autocomplete="off"> 
+                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="customerId") echo "checked";?> value="CustomerAccount.AccountNumber" id="customerId" autocomplete="off"> 
                 <label for="customerId" class="form-check-label">Customer Account</label>
               </div>
               <div class="col">
-                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="partId") echo "checked";?> value="partId" id="partId" autocomplete="off"> 
+                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="partId") echo "checked";?> value="Inventory.Name" id="partId" autocomplete="off"> 
                 <label for="partId" class="form-check-label">Part</label>
                 <br />
-                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="partName") echo "checked";?> value="partName" id="partName" autocomplete="off"> 
+                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="partName") echo "checked";?> value="Inventory.Quantity" id="partName" autocomplete="off"> 
                 <label for="partName" class="form-check-label">Part Quantity</label>
                 <br />
-                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="partPrice") echo "checked";?> value="partPrice" id="partPrice" autocomplete="off"> 
+                <input type="checkbox" class="form-check" name="content[]" <?php if (isset($report) && $report =="partPrice") echo "checked";?> value="Inventory.Price" id="partPrice" autocomplete="off"> 
                 <label for="partPrice" class="form-check-label">Part Price</label>
               </div>
             </div>
