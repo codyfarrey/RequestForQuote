@@ -56,7 +56,7 @@ crossorigin="anonymous">
             session_start();
             $_SESSION['managerId'] = $row['ManagerID'];
             $_SESSION['managerEmail'] = $row['Email'];
-            header("Location: /~z1800722/rfq/createCustomer.php");
+            header("Location: /~z1819675/RequestForQuote/createCustomer.php");
           } else {
             echo "Invalid Password.";
           }

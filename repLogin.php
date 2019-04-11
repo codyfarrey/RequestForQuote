@@ -55,7 +55,7 @@ crossorigin="anonymous">
           if ($userEmail == $row["Email"] && $userPassword == $row["Password"]) {
             session_start();
             $_SESSION['accountNumber'] = $row['AccountNumber'];
-            header("Location: /~z1800722/rfq/createRFQ.php");
+            header("Location: /~z1819675/RequestForQuote/createRFQ.php");
           } else {
             echo "Invalid Password.";
           }

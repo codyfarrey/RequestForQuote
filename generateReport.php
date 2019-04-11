@@ -38,6 +38,7 @@
 			if ($result->num_rows > 0) 
 			{
 				$result = ($start . $all . $ending);
+				echo $result;
 				$_SESSION['sqlAll'] = $result;
 
 				//previous code for error checking
